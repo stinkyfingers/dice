@@ -4,19 +4,20 @@ import (
 	"database/sql"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/stinkyfingers/dice/helpers/database"
-	"time"
+	"github.com/stinkyfingers/dice/models/dice"
 )
 
 type User struct {
 	ID       int
 	Username string
 	Password string
+	DiceSets dice.DiceSets
 }
 
 var (
 	createUserStmt = "insert into users (username, password) values (?,?)"
-	getUserStmt    = "select id, username, password from user where id = ? "
-	userAuthStmt   = "select id, username, password from user where username = ? and password = ?"
+	getUserStmt    = "select id, username, password from users where id = ? "
+	userAuthStmt   = "select id, username, password from users where username = ? and password = ?"
 	deleteUserStmt = "delete from users where id = ? "
 )
 
