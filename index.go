@@ -3,7 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
-	"github.com/stinkyfingers/dice/controllers/index"
+	"github.com/stinkyfingers/dice/controllers/dice"
 	"log"
 	"net/http"
 	"os"
@@ -19,7 +19,7 @@ func main() {
 
 	// http.Handle("/assets/css/", http.StripPrefix("/assets/css/", http.FileServer(http.Dir("assets/css"))))
 
-	http.HandleFunc("/editGig", index_controller.EditCalendar)
+	http.HandleFunc("/getDie", dice.GetDie)
 
 	// if port != nil && *port != "" {
 	// 	fmt.Print("Port: " + *port)
