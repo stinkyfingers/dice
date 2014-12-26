@@ -34,6 +34,10 @@ func TestDice(t *testing.T) {
 		So(err, ShouldBeNil)
 		So(len(ds.Dice), ShouldBeGreaterThan, 0)
 
+		val, err := d.Roll()
+		So(err, ShouldBeNil)
+		So(val, ShouldEqual, "1")
+
 		//update
 		ds.Name = "test set new"
 		err = ds.Update()

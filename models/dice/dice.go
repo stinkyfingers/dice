@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/stinkyfingers/dice/helpers/database"
+	"math/rand"
 )
 
 type Die struct {
@@ -48,9 +49,15 @@ var (
 	deleteDiceSetStmt = `delete from diceSets where id = ?`
 )
 
-// func (d *Die) Roll() (string, error) {
-
-// }
+func (d *Die) Roll() (string, error) {
+	var err error
+	err = d.Get()
+	if err != nil {
+		return "", err
+	}
+	n := rand.Intn(len(d.Sides))
+	return d.Sides[n].Value, err
+}
 
 func (d *Die) Create() error {
 	var err error
