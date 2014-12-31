@@ -1,0 +1,17 @@
+<div>
+Public Dice Sets
+
+</div>
+<div>
+	<ul>
+		<li ng-repeat="diceSet in publicDiceSets">
+			<h4>Dice Set Name: [[diceSet.name]]</h4>
+			<table>
+				<tr ng-repeat="die in diceSet.dice">
+					<td>Die #: [[die.id]]</td>
+					<td>Sides: <span ng-repeat="side in die.sides">[[side.value]] </td>
+				</tr>
+			</table>
+		</li>
+	</ul>
+</div>

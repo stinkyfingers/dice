@@ -4,8 +4,8 @@ import (
 	"flag"
 	"fmt"
 	"github.com/stinkyfingers/dice/controllers/application"
-	// "github.com/stinkyfingers/dice/controllers/dice"
-	// "github.com/stinkyfingers/dice/controllers/user"
+	"github.com/stinkyfingers/dice/controllers/dice"
+	"github.com/stinkyfingers/dice/controllers/user"
 	"log"
 	"net/http"
 	"os"
@@ -20,30 +20,29 @@ func main() {
 	flag.Parse()
 	fmt.Print("Dice Running. \n")
 
-	// http.Handle("/public/js/", http.StripPrefix("/public/js/", http.FileServer(http.Dir("public/js"))))
-	// http.Handle("/public/templates/", http.StripPrefix("/public/templates/", http.FileServer(http.Dir("public/templates"))))
-
-	// http.HandleFunc("/roll", dice.Roll)
-	// http.HandleFunc("/getDiceSet", dice.GetDiceSet)
-	// http.HandleFunc("/getDie", dice.GetDie)
-	// http.HandleFunc("/getSide", dice.GetSide)
-	// http.HandleFunc("/saveDiceSet", dice.SaveDiceSet)
-	// http.HandleFunc("/saveDie", dice.SaveDie)
-	// http.HandleFunc("/saveSide", dice.SaveSide)
-	// http.HandleFunc("/deleteDiceSet", dice.DeleteDiceSet)
-	// http.HandleFunc("/deleteDie", dice.DeleteDie)
-	// http.HandleFunc("/deleteSide", dice.DeleteSide)
-	// http.HandleFunc("/app", application.Application)
-	// http.HandleFunc("/test", application.Application)
-	//TODO Roll your own regex handler - http://stackoverflow.com/questions/6564558/wildcards-in-the-pattern-for-http-handlefunc
-
+	//FILES
 	rh.AddRoute(regexp.MustCompile("/public/js/"), http.StripPrefix("/public/js/", http.FileServer(http.Dir("public/js"))))
 	rh.AddRoute(regexp.MustCompile("/public/templates/"), http.StripPrefix("/public/templates/", http.FileServer(http.Dir("public/templates"))))
 
+	//API
+	rh.AddRoute(regexp.MustCompile("/roll"), http.HandlerFunc(dice.Roll))
+	rh.AddRoute(regexp.MustCompile("/getPublicDiceSets"), http.HandlerFunc(dice.GetPublicDiceSets))
+	rh.AddRoute(regexp.MustCompile("/getDiceSet"), http.HandlerFunc(dice.GetDiceSet))
+	rh.AddRoute(regexp.MustCompile("/getDie"), http.HandlerFunc(dice.GetDie))
+	rh.AddRoute(regexp.MustCompile("/getSide"), http.HandlerFunc(dice.GetSide))
+	rh.AddRoute(regexp.MustCompile("/saveDiceSet"), http.HandlerFunc(dice.SaveDiceSet))
+	rh.AddRoute(regexp.MustCompile("/saveDie"), http.HandlerFunc(dice.SaveDie))
+	rh.AddRoute(regexp.MustCompile("/saveSide"), http.HandlerFunc(dice.SaveSide))
+	rh.AddRoute(regexp.MustCompile("/deleteDiceSet"), http.HandlerFunc(dice.DeleteDiceSet))
+	rh.AddRoute(regexp.MustCompile("/deleteDie"), http.HandlerFunc(dice.DeleteDie))
+	rh.AddRoute(regexp.MustCompile("/deleteSide"), http.HandlerFunc(dice.DeleteSide))
+
+	//ROUTES
+	rh.AddRoute(regexp.MustCompile("/login"), http.HandlerFunc(application.Login))
+	rh.AddRoute(regexp.MustCompile("/auth"), http.HandlerFunc(user.AuthenticateUser))
 	rh.AddRoute(regexp.MustCompile("/test"), http.HandlerFunc(application.Application))
 	rh.AddRoute(regexp.MustCompile("/app"), http.HandlerFunc(application.Application))
 	rh.AddRoute(regexp.MustCompile("/.*"), http.HandlerFunc(application.Application))
-	log.Print(rh.routes)
 
 	err := http.ListenAndServe(":"+os.Getenv("PORT"), &rh)
 	if err != nil {

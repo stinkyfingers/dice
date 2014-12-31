@@ -1,7 +1,9 @@
 package user
 
 import (
+	"crypto/md5"
 	"database/sql"
+	"encoding/hex"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/stinkyfingers/dice/helpers/database"
 	"github.com/stinkyfingers/dice/models/dice"
@@ -9,15 +11,15 @@ import (
 
 type User struct {
 	ID       int
-	Username string
+	Email    string
 	Password string
 	DiceSets dice.DiceSets
 }
 
 var (
-	createUserStmt = "insert into users (username, password) values (?,?)"
-	getUserStmt    = "select id, username, password from users where id = ? "
-	userAuthStmt   = "select id, username, password from users where username = ? and password = ?"
+	createUserStmt = "insert into users (email, password) values (?,?)"
+	getUserStmt    = "select id, email, password from users where id = ? "
+	userAuthStmt   = "select id, email, password from users where email = ? and password = ?"
 	deleteUserStmt = "delete from users where id = ? "
 )
 
@@ -34,7 +36,7 @@ func (u *User) CreateUser() error {
 		return err
 	}
 	defer stmt.Close()
-	res, err := stmt.Exec(u.Username, u.Password)
+	res, err := stmt.Exec(u.Email, u.Password)
 	if err != nil {
 		return err
 	}
@@ -59,7 +61,7 @@ func (u *User) Get() error {
 		return err
 	}
 	defer stmt.Close()
-	err = stmt.QueryRow(u.ID).Scan(&u.ID, &u.Username, &u.Password)
+	err = stmt.QueryRow(u.ID).Scan(&u.ID, &u.Email, &u.Password)
 	if err != nil {
 		return err
 	}
@@ -78,8 +80,12 @@ func (u *User) Authenticate() error {
 	if err != nil {
 		return err
 	}
+	h := md5.New()
+	h.Write([]byte(u.Password))
+	pass := hex.EncodeToString(h.Sum(nil))
+
 	defer stmt.Close()
-	err = stmt.QueryRow(u.Username, u.Password).Scan(&u.ID, &u.Username, &u.Password)
+	err = stmt.QueryRow(u.Email, pass).Scan(&u.ID, &u.Email, &u.Password)
 	if err != nil {
 		return err
 	}

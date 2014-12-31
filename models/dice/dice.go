@@ -8,25 +8,26 @@ import (
 )
 
 type Die struct {
-	ID        int
-	DiceSetID int
-	Sides     Sides
+	ID        int   `json:"id,omitempty"`
+	DiceSetID int   `json:"diceSetId,omitempty"`
+	Sides     Sides `json:"sides,omitempty"`
 }
 
 type Dice []Die
 
 type Side struct {
-	ID    int
-	DieID int
-	Value string
+	ID    int    `json:"id,omitempty"`
+	DieID int    `json:"dieId,omitempty"`
+	Value string `json:"value,omitempty"`
 }
 type Sides []Side
 
 type DiceSet struct {
-	ID     int
-	Name   string
-	Dice   Dice
-	UserID int
+	ID     int    `json:"id,omitempty"`
+	Name   string `json:"name,omitempty"`
+	Dice   Dice   `json:"dice,omitempty"`
+	UserID int    `json:"userId,omitempty"`
+	Public bool   `json:"public,omitempty"`
 }
 
 type DiceSets []DiceSet
@@ -35,17 +36,22 @@ var (
 	getDieStmt = `select d.id, d.diceSet_id, s.id, s.die_id, s.value from dice as d 
 		left join dieSides as s on s.die_id = d.id
 		where d.id = ?`
-	getDiceSetStmt = `select ds.id, ds.name, ds.user_id, d.id, d.diceSet_id
+	getDiceSetStmt = `select ds.id, ds.name, ds.user_id, ds.public
 		from diceSets as ds
-		left join dice as d on d.diceSet_id = ds.id
 		where ds.id = ?`
+	getPublicDiceSetsStmt = `select ds.id, ds.name, ds.user_id, ds.public
+		from diceSets as ds
+		where ds.public = true`
+	getDiceByDiceSetStmt = `select d.id, d.diceSet_id from dice as d 
+		where d.diceSet_id = ?`
 	getSideStmt       = `select s.id, s.die_id, s.value from dieSides as s where id = ?`
+	getSidesByDieStmt = `select s.id, s.die_id, s.value from dieSides as s where s.die_id = ?`
 	insertDieStmt     = `insert into dice (diceSet_id) values (?)`
 	updateDieStmt     = `update dice set diceSet_id = ? where id = ?`
 	insertSideStmt    = `insert into dieSides(die_id, value) values(?,?)`
-	insertDiceSetStmt = `insert into diceSets (name, user_id) values (?,?)`
+	insertDiceSetStmt = `insert into diceSets (name, user_id, public) values (?,?,?)`
 	updateSideStmt    = `update dieSides set die_id = ? and value = ? where id = ?`
-	updateDiceSetStmt = `update diceSets set name = ? where id = ?`
+	updateDiceSetStmt = `update diceSets set name = ?, public = ? where id = ?`
 	deleteDieStmt     = `delete from dice where id = ?`
 	deleteSideStmt    = `delete from dieSides where id = ?`
 	deleteDiceSetStmt = `delete from diceSets where id = ?`
@@ -124,7 +130,7 @@ func (ds *DiceSet) Create() error {
 		return err
 	}
 	defer stmt.Close()
-	res, err := stmt.Exec(ds.Name, ds.UserID)
+	res, err := stmt.Exec(ds.Name, ds.UserID, ds.Public)
 	if err != nil {
 		return err
 	}
@@ -159,6 +165,67 @@ func (d *Die) Get() error {
 	}
 	return err
 }
+
+func (ds *DiceSet) GetDiceByDiceSetID() error {
+	var err error
+	db, err := sql.Open("mysql", database.ConnectionString())
+	if err != nil {
+		return err
+	}
+	defer db.Close()
+
+	stmt, err := db.Prepare(getDiceByDiceSetStmt)
+	if err != nil {
+		return err
+	}
+	defer stmt.Close()
+	res, err := stmt.Query(ds.ID)
+	if err != nil {
+		return err
+	}
+	for res.Next() {
+		var d Die
+		err = res.Scan(&d.ID, &d.DiceSetID)
+		if err != nil {
+			return err
+		}
+		err = d.GetSidesByDieID()
+		if err != nil {
+			return err
+		}
+		ds.Dice = append(ds.Dice, d)
+	}
+	return err
+}
+
+func (d *Die) GetSidesByDieID() error {
+	var err error
+	db, err := sql.Open("mysql", database.ConnectionString())
+	if err != nil {
+		return err
+	}
+	defer db.Close()
+
+	stmt, err := db.Prepare(getSidesByDieStmt)
+	if err != nil {
+		return err
+	}
+	defer stmt.Close()
+	res, err := stmt.Query(d.ID)
+	if err != nil {
+		return err
+	}
+	for res.Next() {
+		var s Side
+		err = res.Scan(&s.ID, &s.DieID, &s.Value)
+		if err != nil {
+			return err
+		}
+		d.Sides = append(d.Sides, s)
+	}
+	return err
+}
+
 func (s *Side) Get() error {
 	var err error
 	db, err := sql.Open("mysql", database.ConnectionString())
@@ -181,6 +248,7 @@ func (s *Side) Get() error {
 	}
 	return err
 }
+
 func (ds *DiceSet) Get() error {
 	var err error
 	db, err := sql.Open("mysql", database.ConnectionString())
@@ -199,19 +267,53 @@ func (ds *DiceSet) Get() error {
 		return err
 	}
 
-	var d Die
 	for res.Next() {
-		err = res.Scan(&ds.ID, &ds.Name, &ds.UserID, &d.ID, &d.DiceSetID)
+		err = res.Scan(&ds.ID, &ds.Name, &ds.UserID, &ds.Public)
 		if err != nil {
 			return err
 		}
-		err = d.Get()
+		err = ds.GetDiceByDiceSetID()
 		if err != nil {
 			return err
 		}
-		ds.Dice = append(ds.Dice, d)
 	}
 	return err
+}
+
+//select ds.id, ds.name, ds.user_id, ds.public, d.id, d.diceSet_id
+func GetPublicDiceSets() ([]DiceSet, error) {
+	var err error
+	var dss []DiceSet
+	db, err := sql.Open("mysql", database.ConnectionString())
+	if err != nil {
+		return dss, err
+	}
+	defer db.Close()
+
+	stmt, err := db.Prepare(getPublicDiceSetsStmt)
+	if err != nil {
+		return dss, err
+	}
+	defer stmt.Close()
+	res, err := stmt.Query()
+	if err != nil {
+		return dss, err
+	}
+
+	// var d Die
+	var ds DiceSet
+	for res.Next() {
+		err = res.Scan(&ds.ID, &ds.Name, &ds.UserID, &ds.Public)
+		if err != nil {
+			return dss, err
+		}
+		err = ds.GetDiceByDiceSetID()
+		if err != nil {
+			return dss, err
+		}
+		dss = append(dss, ds)
+	}
+	return dss, err
 }
 
 func (s *Side) Update() error {
@@ -267,7 +369,7 @@ func (ds *DiceSet) Update() error {
 		return err
 	}
 	defer stmt.Close()
-	_, err = stmt.Exec(ds.UserID, ds.ID)
+	_, err = stmt.Exec(ds.UserID, ds.Public, ds.ID)
 	if err != nil {
 		return err
 	}
@@ -276,6 +378,14 @@ func (ds *DiceSet) Update() error {
 
 func (d *Die) Delete() error {
 	var err error
+	//delete Sides
+	for _, s := range d.Sides {
+		err = s.Delete()
+		if err != nil {
+			return err
+		}
+	}
+
 	for _, s := range d.Sides {
 		err = s.Delete()
 		if err != nil {
@@ -321,6 +431,14 @@ func (s *Side) Delete() error {
 }
 func (ds *DiceSet) Delete() error {
 	var err error
+	//delete Dice
+	for _, d := range ds.Dice {
+		err = d.Delete()
+		if err != nil {
+			return err
+		}
+	}
+
 	for _, d := range ds.Dice {
 		err = d.Delete()
 		if err != nil {

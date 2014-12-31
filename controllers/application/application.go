@@ -17,3 +17,16 @@ func Application(rw http.ResponseWriter, r *http.Request) {
 		http.Error(rw, "Error executing templates.", 404)
 	}
 }
+
+func Login(rw http.ResponseWriter, r *http.Request) {
+	tname := "main"
+	t, err := template.New(tname).ParseFiles("templates/main.tmpl", "templates/login.tmpl")
+	err = t.ExecuteTemplate(rw, tname, nil)
+	if err != nil {
+		http.Error(rw, "Error executing templates.", 404)
+	}
+}
+
+func Authenticate(rw http.ResponseWriter, r *http.Request) {
+
+}

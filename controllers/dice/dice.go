@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"github.com/stinkyfingers/dice/models/dice"
 	"io/ioutil"
-	// "log"
 	"net/http"
 )
 
@@ -46,6 +45,22 @@ func Roll(rw http.ResponseWriter, r *http.Request) {
 	}
 
 	jstring, err := json.Marshal(rs)
+	if err != nil {
+		http.Error(rw, err.Error(), 404)
+	}
+	rw.Write(jstring)
+}
+
+func GetPublicDiceSets(rw http.ResponseWriter, r *http.Request) {
+	var dss []dice.DiceSet
+	var err error
+
+	dss, err = dice.GetPublicDiceSets()
+	if err != nil {
+		http.Error(rw, err.Error(), 404)
+	}
+
+	jstring, err := json.Marshal(dss)
 	if err != nil {
 		http.Error(rw, err.Error(), 404)
 	}

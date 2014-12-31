@@ -23,12 +23,12 @@ define(['angularAMD', 'angular-route'], function (angularAMD) {
 				templateUrl: '/public/js/templates/test.tmpl',
 				controller: 'testController',
 				controllerUrl: 'controllers/test'
+			})).
+			when("/diceSets",angularAMD.route({
+				templateUrl: '/public/js/templates/diceSets.tmpl',
+				controller: 'diceSetsController',
+				controllerUrl: 'controllers/diceSets'
 			}))
-			// when("/setlists",angularAMD.route({
-			// 	templateUrl: '/templates/setlist.tmpl',
-			// 	controller: 'setlistController',
-			// 	controllerUrl: 'controllers/setlists'
-			// })).
 			// when('/admin/main', angularAMD.route({
 		 //        templateUrl: "/templates/main.tmpl",
 		 //        controller: "adminController",

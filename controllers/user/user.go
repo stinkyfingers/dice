@@ -1,12 +1,18 @@
 package user
 
 import (
+	"database/sql"
 	"encoding/json"
+	"errors"
 	"github.com/stinkyfingers/dice/models/user"
 	"io/ioutil"
-	// "log"
 	"net/http"
+	"strconv"
 	"time"
+)
+
+const (
+	timeFormat = "Jan 2, 2006 at 3:04pm (MST)"
 )
 
 func CreateUser(rw http.ResponseWriter, r *http.Request) {
@@ -78,38 +84,43 @@ func DeleteUser(rw http.ResponseWriter, r *http.Request) {
 func AuthenticateUser(rw http.ResponseWriter, r *http.Request) {
 	var u user.User
 	var cookie http.Cookie
-	requestBody, err := ioutil.ReadAll(r.Body)
-	if err != nil {
-		http.Error(rw, err.Error(), 404)
-	}
-
-	err = json.Unmarshal(requestBody, &u)
-	if err != nil {
-		http.Error(rw, err.Error(), 404)
+	var err error
+	ct := r.Header.Get("Content-Type")
+	if ct == "application/json" {
+		requestBody, err := ioutil.ReadAll(r.Body)
+		if err != nil {
+			http.Error(rw, err.Error(), 404)
+		}
+		err = json.Unmarshal(requestBody, &u)
+		if err != nil {
+			http.Error(rw, err.Error(), 404)
+		}
+	} else {
+		u.Email = r.FormValue("email")
+		u.Password = r.FormValue("password")
 	}
 	err = u.Authenticate()
 	if err != nil {
+		if err == sql.ErrNoRows {
+			err = errors.New("Invalid email or password")
+		}
 		http.Error(rw, err.Error(), 404)
 	}
 
 	cookie.Name = "user"
-	cookie.Value = u.ID
-	cookie.Expires = 86400 * time.Second
-	http.SetCookie(rw, cookie)
+	cookie.Value = strconv.Itoa(u.ID)
+	cookie.Expires = time.Now().AddDate(0, 0, 1)
+	http.SetCookie(rw, &cookie)
 
-	jstring, err := json.Marshal(u)
-	if err != nil {
-		http.Error(rw, err.Error(), 404)
-	}
-	rw.Write(jstring)
+	http.Redirect(rw, r, "/", 301)
 }
 
-func Logout(rw http.Response, r *http.Request) {
+func Logout(rw http.ResponseWriter, r *http.Request) {
 	cookie, err := r.Cookie("user")
 	if err != nil {
 		http.Error(rw, err.Error(), 404)
 	}
 	cookie.MaxAge = -1
 	http.SetCookie(rw, cookie)
-	rw.Write("success")
+	rw.Write(nil)
 }
