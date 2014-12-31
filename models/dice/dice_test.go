@@ -43,6 +43,10 @@ func TestDice(t *testing.T) {
 		err = ds.Update()
 		So(err, ShouldBeNil)
 
+		d.DiceSetID = ds.ID
+		err = d.Update()
+		So(err, ShouldBeNil)
+
 		s.Value = "2"
 		err = s.Update()
 		So(err, ShouldBeNil)

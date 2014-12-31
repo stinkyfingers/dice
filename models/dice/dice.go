@@ -39,7 +39,9 @@ var (
 		from diceSets as ds
 		left join dice as d on d.diceSet_id = ds.id
 		where ds.id = ?`
+	getSideStmt       = `s.id, s.die_id, s.value from sides as s where id = ?`
 	insertDieStmt     = `insert into dice (diceSet_id) values (?)`
+	updateDieStmt     = `update dice set diceSet_id = ? where id = ?`
 	insertSideStmt    = `insert into dieSides(die_id, value) values(?,?)`
 	insertDiceSetStmt = `insert into diceSets (name, user_id) values (?,?)`
 	updateSideStmt    = `update dieSides set die_id = ? and value = ? where id = ?`
@@ -157,7 +159,28 @@ func (d *Die) Get() error {
 	}
 	return err
 }
+func (s *Side) Get() error {
+	var err error
+	db, err := sql.Open("mysql", database.ConnectionString())
+	if err != nil {
+		return err
+	}
+	defer db.Close()
 
+	stmt, err := db.Prepare(getSideStmt)
+	if err != nil {
+		return err
+	}
+	defer stmt.Close()
+	res, err := stmt.Query(s.ID)
+	for res.Next() {
+		err = res.Scan(&s.ID, &s.DieID, &s.Value)
+		if err != nil {
+			return err
+		}
+	}
+	return err
+}
 func (ds *DiceSet) Get() error {
 	var err error
 	db, err := sql.Open("mysql", database.ConnectionString())
@@ -201,6 +224,26 @@ func (s *Side) Update() error {
 	}
 	defer stmt.Close()
 	_, err = stmt.Exec(s.DieID, s.Value, s.ID)
+	if err != nil {
+		return err
+	}
+	return err
+}
+
+func (d *Die) Update() error {
+	var err error
+	db, err := sql.Open("mysql", database.ConnectionString())
+	if err != nil {
+		return err
+	}
+	defer db.Close()
+
+	stmt, err := db.Prepare(updateDieStmt)
+	if err != nil {
+		return err
+	}
+	defer stmt.Close()
+	_, err = stmt.Exec(d.DiceSetID, d.ID)
 	if err != nil {
 		return err
 	}

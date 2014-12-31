@@ -19,7 +19,16 @@ func main() {
 
 	// http.Handle("/assets/css/", http.StripPrefix("/assets/css/", http.FileServer(http.Dir("assets/css"))))
 
+	http.HandleFunc("/roll", dice.Roll)
+	http.HandleFunc("/getDiceSet", dice.GetDiceSet)
 	http.HandleFunc("/getDie", dice.GetDie)
+	http.HandleFunc("/getSide", dice.GetSide)
+	http.HandleFunc("/saveDiceSet", dice.SaveDiceSet)
+	http.HandleFunc("/saveDie", dice.SaveDie)
+	http.HandleFunc("/saveSide", dice.SaveSide)
+	http.HandleFunc("/deleteDiceSet", dice.DeleteDiceSet)
+	http.HandleFunc("/deleteDie", dice.DeleteDie)
+	http.HandleFunc("/deleteSide", dice.DeleteSide)
 
 	// if port != nil && *port != "" {
 	// 	fmt.Print("Port: " + *port)
