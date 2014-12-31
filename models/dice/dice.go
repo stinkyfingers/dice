@@ -39,7 +39,7 @@ var (
 		from diceSets as ds
 		left join dice as d on d.diceSet_id = ds.id
 		where ds.id = ?`
-	getSideStmt       = `s.id, s.die_id, s.value from sides as s where id = ?`
+	getSideStmt       = `select s.id, s.die_id, s.value from dieSides as s where id = ?`
 	insertDieStmt     = `insert into dice (diceSet_id) values (?)`
 	updateDieStmt     = `update dice set diceSet_id = ? where id = ?`
 	insertSideStmt    = `insert into dieSides(die_id, value) values(?,?)`
@@ -202,6 +202,10 @@ func (ds *DiceSet) Get() error {
 	var d Die
 	for res.Next() {
 		err = res.Scan(&ds.ID, &ds.Name, &ds.UserID, &d.ID, &d.DiceSetID)
+		if err != nil {
+			return err
+		}
+		err = d.Get()
 		if err != nil {
 			return err
 		}
