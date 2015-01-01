@@ -27,6 +27,8 @@ func main() {
 	//API
 	rh.AddRoute(regexp.MustCompile("/roll"), http.HandlerFunc(dice.Roll))
 	rh.AddRoute(regexp.MustCompile("/getPublicDiceSets"), http.HandlerFunc(dice.GetPublicDiceSets))
+	// rh.AddRoute(regexp.MustCompile("/getUserDiceSets"), makeHandler(dice.GetUserDiceSets))
+	rh.AddRoute(regexp.MustCompile("/getUserDiceSets"), http.HandlerFunc(dice.GetUserDiceSets))
 	rh.AddRoute(regexp.MustCompile("/getDiceSet"), http.HandlerFunc(dice.GetDiceSet))
 	rh.AddRoute(regexp.MustCompile("/getDie"), http.HandlerFunc(dice.GetDie))
 	rh.AddRoute(regexp.MustCompile("/getSide"), http.HandlerFunc(dice.GetSide))
@@ -50,6 +52,12 @@ func main() {
 	}
 }
 
+func makeHandler(fn func(http.ResponseWriter, *http.Request) string) http.HandlerFunc {
+	return func(rw http.ResponseWriter, r *http.Request) {
+		fn(rw, r)
+	}
+}
+
 var rh RegexpHandler
 
 type route struct {
@@ -59,13 +67,6 @@ type route struct {
 type RegexpHandler struct {
 	routes []*route
 }
-
-// func AddRoute(pattern *regexp.Regexp, handler http.Handler) *RegexpHandler {
-// 	var rh RegexpHandler
-// 	ro := route{pattern: pattern, handler: handler}
-// 	rh.routes = append(rh.routes, &ro)
-// 	return &rh
-// }
 
 func (rh *RegexpHandler) AddRoute(pattern *regexp.Regexp, handler http.Handler) {
 	ro := route{pattern: pattern, handler: handler}

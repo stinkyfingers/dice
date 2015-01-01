@@ -5,6 +5,8 @@ import (
 	"github.com/stinkyfingers/dice/models/dice"
 	"io/ioutil"
 	"net/http"
+	"strconv"
+	"strings"
 )
 
 type result struct {
@@ -64,6 +66,32 @@ func GetPublicDiceSets(rw http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		http.Error(rw, err.Error(), 404)
 	}
+	rw.Write(jstring)
+}
+
+func GetUserDiceSets(rw http.ResponseWriter, r *http.Request) {
+	var dss []dice.DiceSet
+	var err error
+
+	cookie, err := r.Cookie("user")
+	if err != nil || cookie == nil {
+		http.Error(rw, err.Error(), 404)
+	}
+	c := strings.Split(cookie.String(), "=")[1]
+	userId, err := strconv.Atoi(c)
+	if err != nil {
+		http.Error(rw, err.Error(), 404)
+	}
+
+	dss, err = dice.GetUserDiceSets(userId)
+	if err != nil {
+		http.Error(rw, err.Error(), 404)
+	}
+	jstring, err := json.Marshal(dss)
+	if err != nil {
+		http.Error(rw, err.Error(), 404)
+	}
+	rw.Header().Set("Content-Type", "application/json")
 	rw.Write(jstring)
 }
 

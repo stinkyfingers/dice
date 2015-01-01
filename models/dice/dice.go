@@ -42,6 +42,9 @@ var (
 	getPublicDiceSetsStmt = `select ds.id, ds.name, ds.user_id, ds.public
 		from diceSets as ds
 		where ds.public = true`
+	getUserDiceSetsStmt = `select ds.id, ds.name, ds.user_id, ds.public
+		from diceSets as ds
+		where ds.user_id = ?`
 	getDiceByDiceSetStmt = `select d.id, d.diceSet_id from dice as d 
 		where d.diceSet_id = ?`
 	getSideStmt       = `select s.id, s.die_id, s.value from dieSides as s where id = ?`
@@ -280,7 +283,40 @@ func (ds *DiceSet) Get() error {
 	return err
 }
 
-//select ds.id, ds.name, ds.user_id, ds.public, d.id, d.diceSet_id
+func GetUserDiceSets(userId int) ([]DiceSet, error) {
+	var err error
+	var dss []DiceSet
+	db, err := sql.Open("mysql", database.ConnectionString())
+	if err != nil {
+		return dss, err
+	}
+	defer db.Close()
+
+	stmt, err := db.Prepare(getUserDiceSetsStmt)
+	if err != nil {
+		return dss, err
+	}
+	defer stmt.Close()
+	res, err := stmt.Query(userId)
+	if err != nil {
+		return dss, err
+	}
+
+	var ds DiceSet
+	for res.Next() {
+		err = res.Scan(&ds.ID, &ds.Name, &ds.UserID, &ds.Public)
+		if err != nil {
+			return dss, err
+		}
+		err = ds.GetDiceByDiceSetID()
+		if err != nil {
+			return dss, err
+		}
+		dss = append(dss, ds)
+	}
+	return dss, err
+}
+
 func GetPublicDiceSets() ([]DiceSet, error) {
 	var err error
 	var dss []DiceSet
@@ -300,7 +336,6 @@ func GetPublicDiceSets() ([]DiceSet, error) {
 		return dss, err
 	}
 
-	// var d Die
 	var ds DiceSet
 	for res.Next() {
 		err = res.Scan(&ds.ID, &ds.Name, &ds.UserID, &ds.Public)

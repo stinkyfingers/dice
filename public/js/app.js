@@ -1,8 +1,8 @@
 //app
-define(['angularAMD', 'angular-route'], function (angularAMD) {
+define(['angularAMD', 'angular-route', 'angularCookies'], function (angularAMD) {
 
 
-	var  app = angular.module("app",["ngRoute"],function($interpolateProvider){
+	var  app = angular.module("app",["ngRoute","ngCookies"],function($interpolateProvider){
 		$interpolateProvider.startSymbol('[[');
 	    $interpolateProvider.endSymbol(']]');
 	});
@@ -60,7 +60,12 @@ define(['angularAMD', 'angular-route'], function (angularAMD) {
 
 	});
 
-	// //user on rootScope
+	app.run(function($rootScope, $cookies){
+		var u = $cookies.user;
+		$rootScope.user = u;
+	})
+
+	//user on rootScope
 	// app.run(function($rootScope, mainFactory){
 	// 	$rootScope.user={};
 	// 	$rootScope.user = mainFactory.getCurrentUser()
@@ -79,7 +84,7 @@ define(['angularAMD', 'angular-route'], function (angularAMD) {
 	//         var deferred = $q.defer();
 	//         $http({
 	//           method:"GET",
-	//           url:"/api/user"
+	//           url:"/user"
 	//         }).success(function(data){
 	//           deferred.resolve(data);
 	//         }).error(function(){
