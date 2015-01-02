@@ -1,8 +1,8 @@
 
-<div>
+<div ng-if="publicDiceSets.length">
 	<h3>Public Dice Sets</h3>
 	<ul>
-		<li ng-repeat="diceSet in publicDiceSets">
+		<li ng-repeat="diceSet in publicDiceSets track by $index">
 			<h4>Dice Set Name: <a href="/diceSet/[[diceSet.id]]">[[diceSet.name]]</a></h4>
 			<table>
 				<tr ng-repeat="die in diceSet.dice">
@@ -15,10 +15,10 @@
 </div>
 
 
-<div ng-if="userDiceSets">
+<div ng-if="userDiceSets.length">
 	<h3>User Dice Sets</h3>
 	<ul>
-		<li ng-repeat="diceSet in userDiceSets">
+		<li ng-repeat="diceSet in userDiceSets track by $index">
 			<h4>Dice Set Name: <a href="/diceSet/[[diceSet.id]]">[[diceSet.name]]</a></h4>
 			<table>
 				<tr ng-repeat="die in diceSet.dice">
