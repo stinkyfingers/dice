@@ -159,11 +159,29 @@ func (d *Die) Get() error {
 	defer stmt.Close()
 	res, err := stmt.Query(d.ID)
 	var s Side
+	var sid, did *int
+	var val *string
 	for res.Next() {
-		err = res.Scan(&d.ID, &d.DiceSetID, &s.ID, &s.DieID, &s.Value)
+		err = res.Scan(
+			&d.ID,
+			&d.DiceSetID,
+			&sid,
+			&did,
+			&val,
+		)
 		if err != nil {
 			return err
 		}
+		if sid != nil {
+			s.ID = *sid
+		}
+		if did != nil {
+			s.DieID = *did
+		}
+		if val != nil {
+			s.Value = *val
+		}
+
 		d.Sides = append(d.Sides, s)
 	}
 	return err

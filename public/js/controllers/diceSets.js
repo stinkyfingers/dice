@@ -2,7 +2,6 @@
 define(["app", "services/diceSets"],function(app){
 
 	app.controller("diceSetsController", function($scope, diceSetsFactory, $rootScope){
-		// $scope.test = "Hello";
 		// $scope.userId = $rootScope.user;
 
 		$scope.publicDiceSets = diceSetsFactory.getPublicDiceSets()

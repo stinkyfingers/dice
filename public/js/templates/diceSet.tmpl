@@ -1,0 +1,10 @@
+
+<div>
+	<h3>Name: [[diceSet.name]]</h3>
+	<button ng-click="roll()">ROLL</buttom>
+
+</div>
+<div ng-if="results">
+	<div ng-repeat="result in results">[[result.dieId]] - > [[result.value]]</div>
+
+</div>

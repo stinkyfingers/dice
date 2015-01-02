@@ -1,11 +1,9 @@
-<div>
-Public Dice Sets
 
-</div>
 <div>
+	<h3>Public Dice Sets</h3>
 	<ul>
 		<li ng-repeat="diceSet in publicDiceSets">
-			<h4>Dice Set Name: [[diceSet.name]]</h4>
+			<h4>Dice Set Name: <a href="/diceSet/[[diceSet.id]]">[[diceSet.name]]</a></h4>
 			<table>
 				<tr ng-repeat="die in diceSet.dice">
 					<td>Die #: [[die.id]]</td>
@@ -16,4 +14,18 @@ Public Dice Sets
 	</ul>
 </div>
 
-[[userDiceSets]]
+
+<div ng-if="userDiceSets">
+	<h3>User Dice Sets</h3>
+	<ul>
+		<li ng-repeat="diceSet in userDiceSets">
+			<h4>Dice Set Name: <a href="/diceSet/[[diceSet.id]]">[[diceSet.name]]</a></h4>
+			<table>
+				<tr ng-repeat="die in diceSet.dice">
+					<td>Die #: [[die.id]]</td>
+					<td>Sides: <span ng-repeat="side in die.sides">[[side.value]] </td>
+				</tr>
+			</table>
+		</li>
+	</ul>
+</div>

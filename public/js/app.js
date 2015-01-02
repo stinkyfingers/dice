@@ -28,12 +28,12 @@ define(['angularAMD', 'angular-route', 'angularCookies'], function (angularAMD) 
 				templateUrl: '/public/js/templates/diceSets.tmpl',
 				controller: 'diceSetsController',
 				controllerUrl: 'controllers/diceSets'
-			}))
-			// when('/admin/main', angularAMD.route({
-		 //        templateUrl: "/templates/main.tmpl",
-		 //        controller: "adminController",
-		 //        controllerUrl: "controllers/admin"
-		 //    })).
+			})).
+			when('/diceSet/:id', angularAMD.route({
+		        templateUrl: "/public/js/templates/diceSet.tmpl",
+		        controller: "diceSetController",
+		        controllerUrl: "controllers/diceSet"
+		    })).
 		 //    when('/admin/games', angularAMD.route({
 		 //        templateUrl: "/templates/admin/games.tmpl",
 		 //        controller: "gamesController",
@@ -54,7 +54,7 @@ define(['angularAMD', 'angular-route', 'angularCookies'], function (angularAMD) 
 		 //        controller: "adminController",
 		 //        controllerUrl: "controllers/admin"
 		 //    })).
-			// otherwise({redirectTo: "/"});
+			otherwise({redirectTo: "/"});
 
 		
 
