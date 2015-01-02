@@ -1,18 +1,17 @@
-$ docker run ubuntu:14.04 grep -v '^#' /etc/apt/sources.list
+# Start from a Debian image with the latest version of Go installed
+# and a workspace (GOPATH) configured at /go.
+FROM golang
 
-deb http://archive.ubuntu.com/ubuntu/ trusty main restricted
-deb-src http://archive.ubuntu.com/ubuntu/ trusty main restricted
+# Copy the local package files to the container's workspace.
+ADD . /go/src/github.com/stinkyfingers/dice
 
-deb http://archive.ubuntu.com/ubuntu/ trusty-updates main restricted
-deb-src http://archive.ubuntu.com/ubuntu/ trusty-updates main restricted
+# Build the dice command inside the container.
+# (You may fetch or manage dependencies here,
+# either manually or with a tool like "godep".)
+RUN go install github.com/stinkyfingers/dice
 
-deb http://archive.ubuntu.com/ubuntu/ trusty universe
-deb-src http://archive.ubuntu.com/ubuntu/ trusty universe
-deb http://archive.ubuntu.com/ubuntu/ trusty-updates universe
-deb-src http://archive.ubuntu.com/ubuntu/ trusty-updates universe
+# Run the outyet command by default when the container starts.
+ENTRYPOINT /go/bin/dice
 
-
-deb http://archive.ubuntu.com/ubuntu/ trusty-security main restricted
-deb-src http://archive.ubuntu.com/ubuntu/ trusty-security main restricted
-deb http://archive.ubuntu.com/ubuntu/ trusty-security universe
-deb-src http://archive.ubuntu.com/ubuntu/ trusty-security universe
+# Document that the service listens on port 8080.
+EXPOSE 8080
