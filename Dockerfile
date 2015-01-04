@@ -8,6 +8,7 @@ ADD . /go/src/github.com/stinkyfingers/dice
 # Build the dice command inside the container.
 # (You may fetch or manage dependencies here,
 # either manually or with a tool like "godep".)
+RUN go get github.com/go-sql-driver/mysql
 RUN go install github.com/stinkyfingers/dice
 
 # Run the outyet command by default when the container starts.
