@@ -2,6 +2,8 @@
 define(["app", "services/diceSet"],function(app){
 
 	app.controller("diceSetController", function($scope, diceSetFactory, $routeParams){
+		$scope.editorEnabled = false;
+
 		var id  = $routeParams.id;
 		id = parseInt(id, 10);
 	
@@ -25,6 +27,14 @@ define(["app", "services/diceSet"],function(app){
 				},function(err){
 					$scope.err = err;
 				});
+		};
+
+		$scope.editor = function(){
+			if ($scope.editorEnabled == false){
+				$scope.editorEnabled = true;
+			}else{
+				$scope.editorEnabled = false;
+			}
 		};
 
 	});

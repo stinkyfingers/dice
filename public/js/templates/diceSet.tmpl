@@ -4,7 +4,26 @@
 	<button ng-click="roll()">ROLL</buttom>
 
 </div>
-<div ng-if="results">
-	<div ng-repeat="result in results">[[result.dieId]] - > [[result.value]]</div>
+<div ng-if="results != 'null'">
+	<div ng-repeat="result in results track by $id">[[result.dieId]] - > [[result.value]]</div>
+</div>
+
+<div>
+	<div ng-click="editor()">EDIT</div>
+</div>
+
+<div ng-if="editorEnabled">
+	<label for="name">Name:</label>
+	<input type="text" name="name" value="[[diceSet.name]]">
+	
+	<div ng-repeat="die in diceSet.dice">
+
+		<div  ng-repeat="side in die.sides">
+			<label for="side">Side:</label>
+			<input type="text" name="side" value="[[side.value]]">
+		</div>
+
+	</div>
+	<button ng-click="saveDiceSet(diceSet)">Save</button>
 
 </div>

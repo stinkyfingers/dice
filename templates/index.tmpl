@@ -6,19 +6,24 @@
 	<li><a href="/diceSets">View Dice Sets</a></li>
 </ul>
 
-{{$user := .user}}
 
-{{if gt $user.ID  0}}
-	<p>Welcome, {{$user.Email}}. </p>
-{{else}}
-	<form method="post" action="/auth">
-		<label for="email">Email: </label>
-		<input type="text" name="email">
-		<label for="password">Password: </label>
-		<input type="text" name="password">
-		<input type="submit" value="Submit">
-	</form>
-{{end}}
+	{{$user := .user}}
 
 
+
+	{{if $user.ID }}
+		<p>Welcome, {{$user.Email}}. </p>
+	{{else}}
+		<form method="post" action="/auth">
+			<label for="email">Email: </label>
+			<input type="text" name="email">
+			<label for="password">Password: </label>
+			<input type="text" name="password">
+			<input type="submit" value="Submit">
+		</form>
+	{{end}}
+
+
+	
+	
 {{end}}
