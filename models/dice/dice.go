@@ -422,7 +422,7 @@ func (ds *DiceSet) Update() error {
 		return err
 	}
 	defer stmt.Close()
-	_, err = stmt.Exec(ds.UserID, ds.Public, ds.ID)
+	_, err = stmt.Exec(ds.Name, ds.Public, ds.ID)
 	if err != nil {
 		return err
 	}

@@ -5,7 +5,7 @@
 
 </div>
 <div ng-if="results != 'null'">
-	<div ng-repeat="result in results track by $id">[[result.dieId]] - > [[result.value]]</div>
+	<div ng-repeat="result in results">[[result.dieId]] - > [[result.value]]</div>
 </div>
 
 <div>
@@ -14,12 +14,12 @@
 
 <div ng-if="editorEnabled">
 	<label for="name">Name:</label>
-	<input type="text" name="name" value="[[diceSet.name]]">
+	<input type="text" name="name" ng-model="diceSet.name" value="[[diceSet.name]]">
 	
 	<div ng-repeat="die in diceSet.dice">
-
+		Die: [[die.id]]
 		<div  ng-repeat="side in die.sides">
-			<label for="side">Side:</label>
+			<label for="side">Side [[side.id]]:</label>
 			<input type="text" name="side" value="[[side.value]]">
 		</div>
 

@@ -37,5 +37,14 @@ define(["app", "services/diceSet"],function(app){
 			}
 		};
 
+		$scope.saveDiceSet = function(diceSet){
+			diceSetFactory.saveDiceSet(diceSet)
+				.then(function(data){
+					$scope.diceSet = data;
+				},function(err){
+					$scope.err = err;
+				});
+		};
+
 	});
 });

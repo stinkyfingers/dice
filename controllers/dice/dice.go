@@ -181,11 +181,8 @@ func SaveDiceSet(rw http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		http.Error(rw, err.Error(), 400)
 	}
+
 	if ds.ID > 0 {
-		err = ds.Get()
-		if err != nil {
-			http.Error(rw, err.Error(), 400)
-		}
 		err = ds.Update()
 		if err != nil {
 			http.Error(rw, err.Error(), 400)

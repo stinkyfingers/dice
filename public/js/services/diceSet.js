@@ -36,6 +36,23 @@ define(['app'], function (app) {
 			return deferred.promise;
 		};
 
+		factory.saveDiceSet = function(diceSet){
+			var deferred = $q.defer();
+			$http({
+				method:'post',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				url:'http://localhost:5000/saveDiceSet',
+				data:diceSet
+			}).success(function(data){
+				deferred.resolve(data)
+			}).error(function(data){
+				deferred.reject(data);
+			});
+			return deferred.promise;
+		};
+
 		
 		return factory;
 
