@@ -34,6 +34,11 @@ define(['angularAMD', 'angular-route', 'angularCookies'], function (angularAMD) 
 		        controller: "diceSetController",
 		        controllerUrl: "controllers/diceSet"
 		    })).
+		    when('/diceSet', angularAMD.route({
+		        templateUrl: "/public/js/templates/diceSet.tmpl",
+		        controller: "diceSetController",
+		        controllerUrl: "controllers/diceSet"
+		    })).
 		    // when('/login',angularAMD.route({
 		    // 	templateUrl: "templates/login.tmpl",
 		    // }))

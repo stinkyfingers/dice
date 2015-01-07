@@ -8,10 +8,13 @@ define(["app", "services/diceSet"],function(app){
 		id = parseInt(id, 10);
 	
 		$scope.diceSet = {
-			id:id
+			id:id,
+			dice:[]
 		}
+		$scope.die = {};
 		$scope.diceSet.id = id;
 		$scope.diceSet = angular.toJson($scope.diceSet, false);
+		console.log($scope.diceSet)
 
 		$scope.diceSet = diceSetFactory.getDiceSet($scope.diceSet)
 			.then(function(data){
@@ -45,6 +48,21 @@ define(["app", "services/diceSet"],function(app){
 					$scope.err = err;
 				});
 		};
+
+		$scope.numDice = [1,2,3,4,5,6,7,8,9];
+
+		//TODO
+		$scope.setNumDice = function(){
+			$scope.diceSet.dice = [];
+			angular.forEach($scope.diceSet.numDice,function(v,k){
+				$scope.die = {
+					value:"hi"
+				};
+				$scope.diceSet.dice.push($scope.die);
+			});
+			console.log($scope.diceSet)
+		}
+
 
 	});
 });
