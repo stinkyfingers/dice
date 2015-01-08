@@ -2,15 +2,17 @@
 <div>
 	<h3>Name: [[diceSet.name]]</h3>
 	<button ng-click="roll()">ROLL</buttom>
+</div>
+<div>
 
-</div>
-<div ng-if="results != 'null'">
-	<div ng-repeat="result in results">[[result.dieId]] - > [[result.value]]</div>
+	<div ng-if="results != 'null'">
+		<div ng-repeat="result in results">[[result.dieId]] - > [[result.value]]</div>
+	</div>
 </div>
 
-<div ng-if="diceSet.id > 0">
-	<div ng-click="editor()">EDIT</div>
-</div>
+
+<div ng-click="editor()">EDIT</div>
+
 
 <div ng-if="editorEnabled">
 	<label for="name">Name:</label>
@@ -20,25 +22,11 @@
 		Die: [[die.id]]
 		<div  ng-repeat="side in die.sides">
 			<label for="side">Side [[side.id]]:</label>
-			<input type="text" name="side" value="[[side.value]]">
+			<input type="text" name="side" ng-model="side.value">
 		</div>
-
+		<button ng-click="addSide(die)">Add Side</button>
 	</div>
+	<button ng-click="addDie(diceSet)">Add Die</button>
 	<button ng-click="saveDiceSet(diceSet)">Save</button>
 
-</div>
-
-<div ng-if="diceSet.id == null">
-	EDITOR
-	<label for="name">Name:</label>
-	<input type="text" name="name" ng-model="diceSet.name" value="[[diceSet.name]]">
-
-	<label for="numDice">Number Of Dice:</label>
-	<select name="numDice" ng-model="diceSet.numDice" ng-options="o as o for o in numDice" ng-change="setNumDice()"></select>
-
-	[[diceSet.numDice]]
-	<div ng-repeat="die in diceSet.dice">
-		die
-	</div>
-	<button ng-click="saveDiceSet(diceSet)">Save</button>
 </div>

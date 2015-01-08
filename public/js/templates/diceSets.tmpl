@@ -24,7 +24,7 @@
 	<ul>
 		<li ng-repeat="diceSet in userDiceSets track by $index">
 			<h4>Dice Set Name: <a href="/diceSet/[[diceSet.id]]">[[diceSet.name]]</a></h4><span class="achtung" ng-click="deleteDiceSet(diceSet)">DELETE</span>
-			<table>
+			<table ng-if="diceSet.dice.length">
 				<tr ng-repeat="die in diceSet.dice">
 					<td>Die #: [[die.id]]</td>
 					<td>Sides: <span ng-repeat="side in die.sides">[[side.value]] </td>

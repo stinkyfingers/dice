@@ -12,9 +12,17 @@ define(["app", "services/diceSet"],function(app){
 			dice:[]
 		}
 		$scope.die = {};
-		$scope.diceSet.id = id;
-		$scope.diceSet = angular.toJson($scope.diceSet, false);
-		console.log($scope.diceSet)
+		console.log($scope.diceSet.id)
+		if ($scope.diceSet.id == 0 || isNaN($scope.diceSet.id)){
+			$scope.editorEnabled = true;
+			$scope.diceSet = {
+				dice:[]
+			}
+		}
+		// $scope.diceSet.id = id;
+		// $scope.diceSet = angular.toJson($scope.diceSet, false);
+
+		//TODO - add die on new diceSet or no-die ones
 
 		$scope.diceSet = diceSetFactory.getDiceSet($scope.diceSet)
 			.then(function(data){
@@ -49,19 +57,23 @@ define(["app", "services/diceSet"],function(app){
 				});
 		};
 
-		$scope.numDice = [1,2,3,4,5,6,7,8,9];
-
-		//TODO
-		$scope.setNumDice = function(){
-			$scope.diceSet.dice = [];
-			angular.forEach($scope.diceSet.numDice,function(v,k){
-				$scope.die = {
-					value:"hi"
-				};
-				$scope.diceSet.dice.push($scope.die);
-			});
-			console.log($scope.diceSet)
+		$scope.addSide = function(die){
+			var side = {
+				id:0,
+				dieId: die.id,
+				value:''
+			}
+			die.sides.push(side);
+		};
+		$scope.addDie = function(diceSet){
+			var die = {
+				id:0,
+				sides:[],
+				diceSetId: diceSet.id
+			}
+			diceSet.dice.push(die);
 		}
+
 
 
 	});

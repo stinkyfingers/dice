@@ -47,17 +47,19 @@ var (
 		where ds.user_id = ?`
 	getDiceByDiceSetStmt = `select d.id, d.diceSet_id from dice as d 
 		where d.diceSet_id = ?`
-	getSideStmt       = `select s.id, s.die_id, s.value from dieSides as s where id = ?`
-	getSidesByDieStmt = `select s.id, s.die_id, s.value from dieSides as s where s.die_id = ?`
-	insertDieStmt     = `insert into dice (diceSet_id) values (?)`
-	updateDieStmt     = `update dice set diceSet_id = ? where id = ?`
-	insertSideStmt    = `insert into dieSides(die_id, value) values(?,?)`
-	insertDiceSetStmt = `insert into diceSets (name, user_id, public) values (?,?,?)`
-	updateSideStmt    = `update dieSides set die_id = ? and value = ? where id = ?`
-	updateDiceSetStmt = `update diceSets set name = ?, public = ? where id = ?`
-	deleteDieStmt     = `delete from dice where id = ?`
-	deleteSideStmt    = `delete from dieSides where id = ?`
-	deleteDiceSetStmt = `delete from diceSets where id = ?`
+	getSideStmt            = `select s.id, s.die_id, s.value from dieSides as s where id = ?`
+	getSidesByDieStmt      = `select s.id, s.die_id, s.value from dieSides as s where s.die_id = ?`
+	insertDieStmt          = `insert into dice (diceSet_id) values (?)`
+	updateDieStmt          = `update dice set diceSet_id = ? where id = ?`
+	insertSideStmt         = `insert into dieSides(die_id, value) values(?,?)`
+	insertDiceSetStmt      = `insert into diceSets (name, user_id, public) values (?,?,?)`
+	updateSideStmt         = `update dieSides set die_id = ? and value = ? where id = ?`
+	updateDiceSetStmt      = `update diceSets set name = ?, public = ? where id = ?`
+	deleteDieStmt          = `delete from dice where id = ?`
+	deleteDieByDiceSetStmt = `delete from dice where diceSet_id = ?`
+	deleteSideStmt         = `delete from dieSides where id = ?`
+	deleteSideByDieStmt    = `delete from dieSides where die_id = ?`
+	deleteDiceSetStmt      = `delete from diceSets where id = ?`
 )
 
 func (d *Die) Roll() (string, error) {
@@ -92,6 +94,14 @@ func (d *Die) Create() error {
 		return err
 	}
 	d.ID = int(id)
+
+	for _, s := range d.Sides {
+		s.DieID = d.ID
+		err = s.Create()
+		if err != nil {
+			return err
+		}
+	}
 	return err
 }
 
@@ -142,6 +152,20 @@ func (ds *DiceSet) Create() error {
 		return err
 	}
 	ds.ID = int(id)
+	for _, d := range ds.Dice {
+		d.DiceSetID = ds.ID
+		err = d.Create()
+		if err != nil {
+			return err
+		}
+		for _, s := range d.Sides {
+			s.DieID = d.ID
+			err = s.Create()
+			if err != nil {
+				return err
+			}
+		}
+	}
 	return err
 }
 func (d *Die) Get() error {
@@ -320,12 +344,13 @@ func GetUserDiceSets(userId int) ([]DiceSet, error) {
 		return dss, err
 	}
 
-	var ds DiceSet
 	for res.Next() {
+		var ds DiceSet
 		err = res.Scan(&ds.ID, &ds.Name, &ds.UserID, &ds.Public)
 		if err != nil {
 			return dss, err
 		}
+
 		err = ds.GetDiceByDiceSetID()
 		if err != nil {
 			return dss, err
@@ -354,8 +379,8 @@ func GetPublicDiceSets() ([]DiceSet, error) {
 		return dss, err
 	}
 
-	var ds DiceSet
 	for res.Next() {
+		var ds DiceSet
 		err = res.Scan(&ds.ID, &ds.Name, &ds.UserID, &ds.Public)
 		if err != nil {
 			return dss, err
@@ -406,6 +431,16 @@ func (d *Die) Update() error {
 	if err != nil {
 		return err
 	}
+	err = d.DeleteSides()
+	if err != nil {
+		return err
+	}
+	for _, side := range d.Sides {
+		err = side.Create()
+		if err != nil {
+			return err
+		}
+	}
 	return err
 }
 
@@ -425,6 +460,17 @@ func (ds *DiceSet) Update() error {
 	_, err = stmt.Exec(ds.Name, ds.Public, ds.ID)
 	if err != nil {
 		return err
+	}
+	err = ds.DeleteDice()
+	if err != nil {
+		return err
+	}
+
+	for _, die := range ds.Dice {
+		err = die.Create()
+		if err != nil {
+			return err
+		}
 	}
 	return err
 }
@@ -482,22 +528,15 @@ func (s *Side) Delete() error {
 	}
 	return err
 }
+
 func (ds *DiceSet) Delete() error {
 	var err error
-	//delete Dice
-	for _, d := range ds.Dice {
-		err = d.Delete()
-		if err != nil {
-			return err
-		}
+
+	err = ds.DeleteDice()
+	if err != nil {
+		return err
 	}
 
-	for _, d := range ds.Dice {
-		err = d.Delete()
-		if err != nil {
-			return err
-		}
-	}
 	db, err := sql.Open("mysql", database.ConnectionString())
 	if err != nil {
 		return err
@@ -510,6 +549,50 @@ func (ds *DiceSet) Delete() error {
 	}
 	defer stmt.Close()
 	_, err = stmt.Query(ds.ID)
+	if err != nil {
+		return err
+	}
+	return err
+}
+func (d *Die) DeleteSides() error {
+	var err error
+	db, err := sql.Open("mysql", database.ConnectionString())
+	if err != nil {
+		return err
+	}
+	defer db.Close()
+
+	stmt, err := db.Prepare(deleteSideByDieStmt)
+	if err != nil {
+		return err
+	}
+	defer stmt.Close()
+	_, err = stmt.Exec(d.ID)
+	if err != nil {
+		return err
+	}
+	return err
+}
+func (ds *DiceSet) DeleteDice() error {
+	var err error
+	for _, d := range ds.Dice {
+		err = d.DeleteSides()
+		if err != nil {
+			return err
+		}
+	}
+	db, err := sql.Open("mysql", database.ConnectionString())
+	if err != nil {
+		return err
+	}
+	defer db.Close()
+
+	stmt, err := db.Prepare(deleteDieByDiceSetStmt)
+	if err != nil {
+		return err
+	}
+	defer stmt.Close()
+	_, err = stmt.Exec(ds.ID)
 	if err != nil {
 		return err
 	}
