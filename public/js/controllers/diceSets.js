@@ -13,7 +13,6 @@ define(["app", "services/diceSets"],function(app){
 		$scope.userDiceSets = diceSetsFactory.getUserDiceSets()
 			.then(function(data){
 					$scope.userDiceSets = data;
-					console.log(data)
 				},function(err){
 					$scope.err = err;
 				});

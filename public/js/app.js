@@ -10,7 +10,10 @@ define(['angularAMD', 'angular-route', 'angularCookies'], function (angularAMD) 
 	app.config(function($routeProvider, $locationProvider){
 
 		if(window.history && window.history.pushState){
-		      $locationProvider.html5Mode(true);
+		      $locationProvider.html5Mode({
+				  enabled: true,
+				  requireBase: false
+				});
 		    }
 
 		$routeProvider.

@@ -19,14 +19,15 @@
 	<input type="text" name="name" ng-model="diceSet.name" value="[[diceSet.name]]">
 	
 	<div ng-repeat="die in diceSet.dice">
-		Die: [[die.id]]
+		Die: [[die.id]] <span ng-click="deleteDie(die)">DELETE DIE</span>
 		<div  ng-repeat="side in die.sides">
 			<label for="side">Side [[side.id]]:</label>
-			<input type="text" name="side" ng-model="side.value">
+			<input type="text" name="side" ng-model="side.value"><span ng-click="deleteSide(side)">DELETE SIDE</span>
 		</div>
 		<button ng-click="addSide(die)">Add Side</button>
 	</div>
 	<button ng-click="addDie(diceSet)">Add Die</button>
 	<button ng-click="saveDiceSet(diceSet)">Save</button>
+	<button ng-click="deleteDiceSet(diceSet)">Delete</button>
 
 </div>

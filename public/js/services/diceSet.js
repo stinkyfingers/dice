@@ -53,6 +53,57 @@ define(['app'], function (app) {
 			return deferred.promise;
 		};
 
+		factory.deleteSide = function(side){
+			var deferred = $q.defer();
+			$http({
+				method:'post',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				url:'http://localhost:5000/deleteSide',
+				data:side
+			}).success(function(data){
+				deferred.resolve(data)
+			}).error(function(data){
+				deferred.reject(data);
+			});
+			return deferred.promise;
+		};
+
+		factory.deleteDie = function(die){
+			var deferred = $q.defer();
+			$http({
+				method:'post',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				url:'http://localhost:5000/deleteDie',
+				data:die
+			}).success(function(data){
+				deferred.resolve(data)
+			}).error(function(data){
+				deferred.reject(data);
+			});
+			return deferred.promise;
+		};
+
+		factory.deleteDiceSet = function(diceSet){
+			var deferred = $q.defer();
+			$http({
+				method:'post',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				url:'http://localhost:5000/deleteDiceSet',
+				data:diceSet
+			}).success(function(data){
+				deferred.resolve(data)
+			}).error(function(data){
+				deferred.reject(data);
+			});
+			return deferred.promise;
+		};
+
 		
 		return factory;
 
