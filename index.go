@@ -41,6 +41,7 @@ func main() {
 
 	//ROUTES
 	rh.AddRoute(regexp.MustCompile("/login"), http.HandlerFunc(application.Login))
+	rh.AddRoute(regexp.MustCompile("/logout"), http.HandlerFunc(application.Logout))
 	rh.AddRoute(regexp.MustCompile("/auth"), http.HandlerFunc(user.AuthenticateUser))
 	rh.AddRoute(regexp.MustCompile("/test"), http.HandlerFunc(application.Application))
 	rh.AddRoute(regexp.MustCompile("/app"), http.HandlerFunc(application.Application))

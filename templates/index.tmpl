@@ -1,13 +1,17 @@
 {{define "index"}}
+{{$user := .user}}
 
 <p>This is the index.</p>
 <ul>
 	<li><a href="/main">Home</a></li>
 	<li><a href="/diceSets">View Dice Sets</a></li>
+	{{if $user.ID}}
+	<li><form method="post" action="/logout"><input type="submit" value="Logout"></input></form></li>
+	{{end}}
 </ul>
 
 
-	{{$user := .user}}
+	
 
 
 

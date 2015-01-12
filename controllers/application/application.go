@@ -3,7 +3,6 @@ package application
 import (
 	"github.com/stinkyfingers/dice/models/user"
 	"html/template"
-	// "log"
 	"net/http"
 	"strconv"
 	"strings"
@@ -45,4 +44,11 @@ func Login(rw http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		http.Error(rw, "Error executing templates.", 400)
 	}
+}
+func Logout(rw http.ResponseWriter, r *http.Request) {
+	var cookie http.Cookie
+	cookie.Name = "user"
+	cookie.MaxAge = -1
+	http.SetCookie(rw, &cookie)
+	http.Redirect(rw, r, "/", 301)
 }
