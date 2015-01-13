@@ -45,6 +45,7 @@ func main() {
 	rh.AddRoute(regexp.MustCompile("/auth"), http.HandlerFunc(user.AuthenticateUser))
 	rh.AddRoute(regexp.MustCompile("/test"), http.HandlerFunc(application.Application))
 	rh.AddRoute(regexp.MustCompile("/app"), http.HandlerFunc(application.Application))
+	rh.AddRoute(regexp.MustCompile("/register"), http.HandlerFunc(user.Register))
 	rh.AddRoute(regexp.MustCompile("/.*"), http.HandlerFunc(application.Application))
 
 	err := http.ListenAndServe(":"+os.Getenv("PORT"), &rh)

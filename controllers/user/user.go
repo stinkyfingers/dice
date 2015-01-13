@@ -124,3 +124,25 @@ func Logout(rw http.ResponseWriter, r *http.Request) {
 	http.SetCookie(rw, cookie)
 	rw.Write(nil)
 }
+
+func Register(rw http.ResponseWriter, r *http.Request) {
+	var err error
+	var u user.User
+	body, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		http.Error(rw, err.Error(), http.StatusInternalServerError)
+	}
+	err = json.Unmarshal(body, &u)
+	if err != nil {
+		http.Error(rw, err.Error(), http.StatusInternalServerError)
+	}
+	err = u.CreateUser()
+	if err != nil {
+		http.Error(rw, err.Error(), http.StatusInternalServerError)
+	}
+	jstring, err := json.Marshal(u)
+	if err != nil {
+		http.Error(rw, err.Error(), 404)
+	}
+	rw.Write(jstring)
+}

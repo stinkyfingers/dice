@@ -25,6 +25,11 @@ var (
 
 func (u *User) CreateUser() error {
 	var err error
+
+	h := md5.New()
+	h.Write([]byte(u.Password))
+	pass := hex.EncodeToString(h.Sum(nil))
+
 	db, err := sql.Open("mysql", database.ConnectionString())
 	if err != nil {
 		return err
@@ -36,7 +41,7 @@ func (u *User) CreateUser() error {
 		return err
 	}
 	defer stmt.Close()
-	res, err := stmt.Exec(u.Email, u.Password)
+	res, err := stmt.Exec(u.Email, pass)
 	if err != nil {
 		return err
 	}

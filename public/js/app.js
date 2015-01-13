@@ -45,11 +45,11 @@ define(['angularAMD', 'angular-route', 'angularCookies'], function (angularAMD) 
 		    // when('/login',angularAMD.route({
 		    // 	templateUrl: "templates/login.tmpl",
 		    // }))
-		 //    when('/admin/games', angularAMD.route({
-		 //        templateUrl: "/templates/admin/games.tmpl",
-		 //        controller: "gamesController",
-		 //        controllerUrl: "controllers/games"
-		 //    })).
+		    when('/registration', angularAMD.route({
+		        templateUrl: "/public/js/templates/user.tmpl",
+		        controller: "userController",
+		        controllerUrl: "controllers/user"
+		    })).
 		 //    when('/admin/setlists', angularAMD.route({
 		 //        templateUrl: "/templates/admin/setlists.tmpl",
 		 //        controller: "setlistController",
@@ -74,7 +74,8 @@ define(['angularAMD', 'angular-route', 'angularCookies'], function (angularAMD) 
 	app.run(function($rootScope, $cookies){
 		var u = $cookies.user;
 		$rootScope.user = u;
-	})
+	});
+
 
 	//user on rootScope
 	// app.run(function($rootScope, mainFactory){

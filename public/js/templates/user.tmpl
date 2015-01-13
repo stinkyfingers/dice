@@ -1,0 +1,11 @@
+<h4>Register New User:</h4>
+<form method="post">
+	<label for="email">Email: </label>
+	<input type="text" ng-model="user.email" name="email">
+	<label for="password">Password: </label>
+	<input type="password" ng-model="user.password" name="password">
+	<label for="passwordConfirm">Confirm Password: </label>
+	<input type="password" ng-model="passwordConfirm" name="passwordConfirm">
+	<button ng-click="register(user)">Submit</button>
+</form>
+		
