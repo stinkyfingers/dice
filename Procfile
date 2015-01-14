@@ -1,1 +1,1 @@
-web: wild-dice
+web: dice
