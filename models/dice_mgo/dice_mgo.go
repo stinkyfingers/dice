@@ -3,31 +3,32 @@ package dice_mgo
 import (
 	"github.com/stinkyfingers/dice/helpers/database"
 	"gopkg.in/mgo.v2"
-	// "gopkg.in/mgo.v2/bson"
+	"gopkg.in/mgo.v2/bson"
+
 	// "math/rand"
 )
 
 type Die struct {
-	ID        int   `json:"id,omitempty"`
-	DiceSetID int   `json:"diceSetId,omitempty"`
-	Sides     Sides `json:"sides,omitempty"`
+	ID        bson.ObjectId `bson:"_id,omitempty"`
+	DiceSetID bson.ObjectId `bson:"diceSetId,omitempty"`
+	Sides     Sides         `bson:"sides,omitempty"`
 }
 
 type Dice []Die
 
 type Side struct {
-	ID    int    `json:"id,omitempty"`
-	DieID int    `json:"dieId,omitempty"`
-	Value string `json:"value,omitempty"`
+	ID    bson.ObjectId `bson:"_id,omitempty"`
+	DieID bson.ObjectId `bson:"dieId,omitempty"`
+	Value string        `bson:"value,omitempty"`
 }
 type Sides []Side
 
 type DiceSet struct {
-	ID     int    `json:"id,omitempty"`
-	Name   string `json:"name,omitempty"`
-	Dice   Dice   `json:"dice,omitempty"`
-	UserID int    `json:"userId,omitempty"`
-	Public bool   `json:"public,omitempty"`
+	ID     bson.ObjectId `bson:"_id,omitempty"`
+	Name   string        `bson:"name,omitempty"`
+	Dice   Dice          `bson:"dice,omitempty"`
+	UserID bson.ObjectId `bson:"userId,omitempty"`
+	Public bool          `bson:"public,omitempty"`
 }
 
 type DiceSets []DiceSet
@@ -39,6 +40,7 @@ func (s *Side) Create() error {
 		return err
 	}
 	defer session.Close()
+	s.ID = bson.NewObjectId()
 	c := session.DB("wilddice").C("sides")
 	err = c.Insert(s)
 	if err != nil {
@@ -54,16 +56,11 @@ func (d *Die) Create() error {
 		return err
 	}
 	defer session.Close()
+	d.ID = bson.NewObjectId()
 	c := session.DB("wilddice").C("dice")
 	err = c.Insert(d)
 	if err != nil {
 		return err
-	}
-	for _, s := range d.Sides {
-		err = s.Create()
-		if err != nil {
-			return err
-		}
 	}
 	return err
 }
@@ -75,22 +72,101 @@ func (ds *DiceSet) Create() error {
 		return err
 	}
 	defer session.Close()
-	c := session.DB("wilddice").C("diceSet")
+	ds.ID = bson.NewObjectId()
+	c := session.DB("wilddice").C("diceSets")
 	err = c.Insert(ds)
 	if err != nil {
 		return err
 	}
-	for _, d := range ds.Dice {
-		err = d.Create()
-		if err != nil {
-			return err
-		}
-		for _, s := range d.Sides {
-			err = s.Create()
-			if err != nil {
-				return err
-			}
-		}
+	return err
+}
+
+func (s *Side) Get() error {
+	var err error
+	session, err := mgo.DialWithInfo(database.MongoConnectionString())
+	if err != nil {
+		return err
+	}
+	defer session.Close()
+	c := session.DB("wilddice").C("sides")
+	err = c.FindId(s.ID).One(&s)
+	if err != nil {
+		return err
+	}
+	return err
+}
+
+func (d *Die) Get() error {
+	var err error
+	session, err := mgo.DialWithInfo(database.MongoConnectionString())
+	if err != nil {
+		return err
+	}
+	defer session.Close()
+	c := session.DB("wilddice").C("dice")
+	err = c.FindId(d.ID).One(&d)
+	if err != nil {
+		return err
+	}
+	return err
+}
+
+func (ds *DiceSet) Get() error {
+	var err error
+	session, err := mgo.DialWithInfo(database.MongoConnectionString())
+	if err != nil {
+		return err
+	}
+	defer session.Close()
+	c := session.DB("wilddice").C("diceSets")
+	err = c.FindId(ds.ID).One(&ds)
+	if err != nil {
+		return err
+	}
+	return err
+}
+
+func (s *Side) Delete() error {
+	var err error
+	session, err := mgo.DialWithInfo(database.MongoConnectionString())
+	if err != nil {
+		return err
+	}
+	defer session.Close()
+	c := session.DB("wilddice").C("sides")
+	err = c.Remove(bson.M{"_id": s.ID})
+	if err != nil {
+		return err
+	}
+	return err
+}
+
+func (d *Die) Delete() error {
+	var err error
+	session, err := mgo.DialWithInfo(database.MongoConnectionString())
+	if err != nil {
+		return err
+	}
+	defer session.Close()
+	c := session.DB("wilddice").C("dice")
+	err = c.Remove(bson.M{"_id": d.ID})
+	if err != nil {
+		return err
+	}
+	return err
+}
+
+func (ds *DiceSet) Delete() error {
+	var err error
+	session, err := mgo.DialWithInfo(database.MongoConnectionString())
+	if err != nil {
+		return err
+	}
+	defer session.Close()
+	c := session.DB("wilddice").C("diceSets")
+	err = c.Remove(bson.M{"_id": ds.ID})
+	if err != nil {
+		return err
 	}
 	return err
 }

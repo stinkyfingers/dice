@@ -8,14 +8,42 @@ import (
 func TestDiceMgo(t *testing.T) {
 	Convey("Test CRUD Side", t, func() {
 		var err error
-		// var d1, d2 Die
-		// var ds DiceSet
-		var s1 Side
+		var d Die
+		var ds DiceSet
+		var s Side
 
 		//create
-		s1.Value = "1"
-		s1.DieID = 1
-		err = s1.Create()
+		ds.Name = "test"
+		err = ds.Create()
+		So(err, ShouldBeNil)
+
+		d.DiceSetID = ds.ID
+		err = d.Create()
+		So(err, ShouldBeNil)
+
+		s.Value = "1"
+		s.DieID = d.ID
+		err = s.Create()
+		So(err, ShouldBeNil)
+
+		//get
+		err = s.Get()
+		So(err, ShouldBeNil)
+
+		err = d.Get()
+		So(err, ShouldBeNil)
+
+		err = ds.Get()
+		So(err, ShouldBeNil)
+
+		//delete
+		err = s.Delete()
+		So(err, ShouldBeNil)
+
+		err = d.Delete()
+		So(err, ShouldBeNil)
+
+		err = ds.Delete()
 		So(err, ShouldBeNil)
 
 	})
