@@ -5,7 +5,7 @@ import (
 	"gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
 
-	// "math/rand"
+	"math/rand"
 )
 
 type Die struct {
@@ -32,6 +32,16 @@ type DiceSet struct {
 }
 
 type DiceSets []DiceSet
+
+func (d *Die) Roll() (string, error) {
+	var err error
+	err = d.Get()
+	if err != nil {
+		return "", err
+	}
+	n := rand.Intn(len(d.Sides))
+	return d.Sides[n].Value, err
+}
 
 func (s *Side) Create() error {
 	var err error
