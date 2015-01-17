@@ -36,6 +36,17 @@ func TestDiceMgo(t *testing.T) {
 		err = ds.Get()
 		So(err, ShouldBeNil)
 
+		s.Value = "2"
+		err = s.Update()
+		So(err, ShouldBeNil)
+
+		err = d.Update()
+		So(err, ShouldBeNil)
+
+		ds.Name = "testUpdate"
+		err = ds.Update()
+		So(err, ShouldBeNil)
+
 		//delete
 		err = s.Delete()
 		So(err, ShouldBeNil)

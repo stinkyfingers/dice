@@ -4,10 +4,10 @@ import (
 	"database/sql"
 	"encoding/json"
 	"errors"
-	"github.com/stinkyfingers/dice/models/user"
+	"github.com/stinkyfingers/dice/models/user_mgo"
 	"io/ioutil"
 	"net/http"
-	"strconv"
+	// "strconv"
 	"time"
 )
 
@@ -16,7 +16,7 @@ const (
 )
 
 func CreateUser(rw http.ResponseWriter, r *http.Request) {
-	var u user.User
+	var u user_mgo.User
 	requestBody, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		http.Error(rw, err.Error(), 404)
@@ -26,7 +26,7 @@ func CreateUser(rw http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		http.Error(rw, err.Error(), 404)
 	}
-	err = u.CreateUser()
+	err = u.Create()
 	if err != nil {
 		http.Error(rw, err.Error(), 404)
 	}
@@ -38,7 +38,7 @@ func CreateUser(rw http.ResponseWriter, r *http.Request) {
 }
 
 func GetUser(rw http.ResponseWriter, r *http.Request) {
-	var u user.User
+	var u user_mgo.User
 	requestBody, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		http.Error(rw, err.Error(), 404)
@@ -60,7 +60,7 @@ func GetUser(rw http.ResponseWriter, r *http.Request) {
 }
 
 func DeleteUser(rw http.ResponseWriter, r *http.Request) {
-	var u user.User
+	var u user_mgo.User
 	requestBody, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		http.Error(rw, err.Error(), 404)
@@ -82,7 +82,7 @@ func DeleteUser(rw http.ResponseWriter, r *http.Request) {
 }
 
 func AuthenticateUser(rw http.ResponseWriter, r *http.Request) {
-	var u user.User
+	var u user_mgo.User
 	var cookie http.Cookie
 	var err error
 	ct := r.Header.Get("Content-Type")
@@ -108,7 +108,7 @@ func AuthenticateUser(rw http.ResponseWriter, r *http.Request) {
 	}
 
 	cookie.Name = "user"
-	cookie.Value = strconv.Itoa(u.ID)
+	cookie.Value = u.ID.String()
 	cookie.Expires = time.Now().AddDate(0, 0, 1)
 	http.SetCookie(rw, &cookie)
 
@@ -127,7 +127,7 @@ func Logout(rw http.ResponseWriter, r *http.Request) {
 
 func Register(rw http.ResponseWriter, r *http.Request) {
 	var err error
-	var u user.User
+	var u user_mgo.User
 	body, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		http.Error(rw, err.Error(), http.StatusInternalServerError)
@@ -136,7 +136,7 @@ func Register(rw http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		http.Error(rw, err.Error(), http.StatusInternalServerError)
 	}
-	err = u.CreateUser()
+	err = u.Create()
 	if err != nil {
 		http.Error(rw, err.Error(), http.StatusInternalServerError)
 	}

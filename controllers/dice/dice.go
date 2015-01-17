@@ -2,22 +2,23 @@ package dice
 
 import (
 	"encoding/json"
-	"github.com/stinkyfingers/dice/models/dice"
+	"github.com/stinkyfingers/dice/models/dice_mgo"
+	"gopkg.in/mgo.v2/bson"
 	"io/ioutil"
 	"net/http"
-	"strconv"
+	// "strconv"
 	"strings"
 )
 
 type result struct {
-	DieID int    `json:"dieId, omitempty"`
-	Value string `json:"value, omitempty"`
+	DieID bson.ObjectId `json:"dieId, omitempty"`
+	Value string        `json:"value, omitempty"`
 }
 
 type results []result
 
 func Roll(rw http.ResponseWriter, r *http.Request) {
-	var ds dice.DiceSet
+	var ds dice_mgo.DiceSet
 	var rs results
 	var thisDie result
 
@@ -32,7 +33,7 @@ func Roll(rw http.ResponseWriter, r *http.Request) {
 	}
 
 	for _, d := range ds.Dice {
-		di := dice.Die{ID: d.ID}
+		di := dice_mgo.Die{ID: d.ID}
 		r, err := di.Roll()
 		if err != nil {
 			http.Error(rw, err.Error(), 400)
@@ -51,10 +52,10 @@ func Roll(rw http.ResponseWriter, r *http.Request) {
 }
 
 func GetPublicDiceSets(rw http.ResponseWriter, r *http.Request) {
-	var dss []dice.DiceSet
+	var dss []dice_mgo.DiceSet
 	var err error
 
-	dss, err = dice.GetPublicDiceSets()
+	dss, err = dice_mgo.GetPublicDiceSets()
 	if err != nil {
 		http.Error(rw, err.Error(), 400)
 	}
@@ -67,7 +68,7 @@ func GetPublicDiceSets(rw http.ResponseWriter, r *http.Request) {
 }
 
 func GetUserDiceSets(rw http.ResponseWriter, r *http.Request) {
-	var dss []dice.DiceSet
+	var dss []dice_mgo.DiceSet
 	var err error
 	rw.Header().Set("Content-Type", "application/json")
 
@@ -77,12 +78,12 @@ func GetUserDiceSets(rw http.ResponseWriter, r *http.Request) {
 		return
 	}
 	c := strings.Split(cookie.String(), "=")[1]
-	userId, err := strconv.Atoi(c)
-	if err != nil {
-		http.Error(rw, err.Error(), 400)
-	}
+	// userId, err := strconv.Atoi(c)
+	// if err != nil {
+	// 	http.Error(rw, err.Error(), 400)
+	// }
 
-	dss, err = dice.GetUserDiceSets(userId)
+	dss, err = dice_mgo.GetUserDiceSets(bson.ObjectIdHex(c)) //was UserId
 	if err != nil {
 		http.Error(rw, err.Error(), 400)
 	}
@@ -94,7 +95,7 @@ func GetUserDiceSets(rw http.ResponseWriter, r *http.Request) {
 }
 
 func GetDiceSet(rw http.ResponseWriter, r *http.Request) {
-	var ds dice.DiceSet
+	var ds dice_mgo.DiceSet
 
 	requestBody, err := ioutil.ReadAll(r.Body)
 	if err != nil {
@@ -120,7 +121,7 @@ func GetDiceSet(rw http.ResponseWriter, r *http.Request) {
 }
 
 func GetDie(rw http.ResponseWriter, r *http.Request) {
-	var d dice.Die
+	var d dice_mgo.Die
 
 	requestBody, err := ioutil.ReadAll(r.Body)
 	if err != nil {
@@ -145,7 +146,7 @@ func GetDie(rw http.ResponseWriter, r *http.Request) {
 	rw.Write(jstring)
 }
 func GetSide(rw http.ResponseWriter, r *http.Request) {
-	var s dice.Side
+	var s dice_mgo.Side
 
 	requestBody, err := ioutil.ReadAll(r.Body)
 	if err != nil {
@@ -170,7 +171,7 @@ func GetSide(rw http.ResponseWriter, r *http.Request) {
 	rw.Write(jstring)
 }
 func SaveDiceSet(rw http.ResponseWriter, r *http.Request) {
-	var ds dice.DiceSet
+	var ds dice_mgo.DiceSet
 
 	requestBody, err := ioutil.ReadAll(r.Body)
 	if err != nil {
@@ -182,7 +183,7 @@ func SaveDiceSet(rw http.ResponseWriter, r *http.Request) {
 		http.Error(rw, err.Error(), 400)
 	}
 
-	if ds.ID > 0 {
+	if ds.ID.String() != "" {
 		err = ds.Update()
 		if err != nil {
 			http.Error(rw, err.Error(), 400)
@@ -201,7 +202,7 @@ func SaveDiceSet(rw http.ResponseWriter, r *http.Request) {
 }
 
 func SaveDie(rw http.ResponseWriter, r *http.Request) {
-	var d dice.Die
+	var d dice_mgo.Die
 
 	requestBody, err := ioutil.ReadAll(r.Body)
 	if err != nil {
@@ -212,7 +213,7 @@ func SaveDie(rw http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		http.Error(rw, err.Error(), 400)
 	}
-	if d.ID > 0 {
+	if d.ID.String() != "" {
 		err = d.Get()
 		if err != nil {
 			http.Error(rw, err.Error(), 400)
@@ -235,7 +236,7 @@ func SaveDie(rw http.ResponseWriter, r *http.Request) {
 }
 
 func SaveSide(rw http.ResponseWriter, r *http.Request) {
-	var s dice.Side
+	var s dice_mgo.Side
 
 	requestBody, err := ioutil.ReadAll(r.Body)
 	if err != nil {
@@ -246,7 +247,7 @@ func SaveSide(rw http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		http.Error(rw, err.Error(), 400)
 	}
-	if s.ID > 0 {
+	if s.ID.String() != "" {
 		err = s.Get()
 		if err != nil {
 			http.Error(rw, err.Error(), 400)
@@ -269,7 +270,7 @@ func SaveSide(rw http.ResponseWriter, r *http.Request) {
 }
 
 func DeleteDiceSet(rw http.ResponseWriter, r *http.Request) {
-	var ds dice.DiceSet
+	var ds dice_mgo.DiceSet
 	requestBody, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		http.Error(rw, err.Error(), 400)
@@ -287,7 +288,7 @@ func DeleteDiceSet(rw http.ResponseWriter, r *http.Request) {
 }
 
 func DeleteDie(rw http.ResponseWriter, r *http.Request) {
-	var d dice.Die
+	var d dice_mgo.Die
 	requestBody, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		http.Error(rw, err.Error(), 400)
@@ -304,7 +305,7 @@ func DeleteDie(rw http.ResponseWriter, r *http.Request) {
 	return
 }
 func DeleteSide(rw http.ResponseWriter, r *http.Request) {
-	var s dice.Side
+	var s dice_mgo.Side
 	requestBody, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		http.Error(rw, err.Error(), 400)

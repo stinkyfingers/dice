@@ -1,26 +1,30 @@
 package application
 
 import (
-	"github.com/stinkyfingers/dice/models/user"
+	"github.com/stinkyfingers/dice/models/user_mgo"
+	"gopkg.in/mgo.v2/bson"
 	"html/template"
 	"net/http"
-	"strconv"
 	"strings"
 )
 
 func Application(rw http.ResponseWriter, r *http.Request) {
 	data := make(map[string]interface{})
 
-	var userId int
-	var u user.User
+	var userId bson.ObjectId
+	var u user_mgo.User
+	var uid string
 
 	cookie, err := r.Cookie("user")
-	if err != nil || cookie == nil {
-		userId = 0
-	} else {
-		userId, err = strconv.Atoi(strings.Split(cookie.String(), "=")[1])
+	if err == nil && cookie != nil {
+
+		uid := strings.Split(cookie.String(), "=")[1]
+		if err != nil {
+			return
+		}
+		userId = bson.ObjectIdHex(uid)
 	}
-	if userId > 0 {
+	if bson.IsObjectIdHex(uid) {
 		u.ID = userId
 		err = u.Get()
 		if err != nil {
@@ -28,7 +32,6 @@ func Application(rw http.ResponseWriter, r *http.Request) {
 		}
 		data["user"] = u
 	}
-
 	tname := "main"
 	t, err := template.New(tname).ParseFiles("templates/main.tmpl", "templates/index.tmpl")
 	err = t.ExecuteTemplate(rw, tname, data)

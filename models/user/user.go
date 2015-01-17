@@ -23,7 +23,7 @@ var (
 	deleteUserStmt = "delete from users where id = ? "
 )
 
-func (u *User) CreateUser() error {
+func (u *User) Create() error {
 	var err error
 
 	h := md5.New()
