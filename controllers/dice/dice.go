@@ -5,8 +5,9 @@ import (
 	"github.com/stinkyfingers/dice/models/dice_mgo"
 	"gopkg.in/mgo.v2/bson"
 	"io/ioutil"
+
+	"log"
 	"net/http"
-	// "strconv"
 	"strings"
 )
 
@@ -29,9 +30,9 @@ func Roll(rw http.ResponseWriter, r *http.Request) {
 
 	err = json.Unmarshal(requestBody, &ds)
 	if err != nil {
+		log.Print(err)
 		http.Error(rw, err.Error(), 400)
 	}
-
 	for _, d := range ds.Dice {
 		di := dice_mgo.Die{ID: d.ID}
 		r, err := di.Roll()
@@ -69,6 +70,7 @@ func GetPublicDiceSets(rw http.ResponseWriter, r *http.Request) {
 
 func GetUserDiceSets(rw http.ResponseWriter, r *http.Request) {
 	var dss []dice_mgo.DiceSet
+	var userId bson.ObjectId
 	var err error
 	rw.Header().Set("Content-Type", "application/json")
 
@@ -78,15 +80,16 @@ func GetUserDiceSets(rw http.ResponseWriter, r *http.Request) {
 		return
 	}
 	c := strings.Split(cookie.String(), "=")[1]
-	// userId, err := strconv.Atoi(c)
-	// if err != nil {
-	// 	http.Error(rw, err.Error(), 400)
-	// }
 
-	dss, err = dice_mgo.GetUserDiceSets(bson.ObjectIdHex(c)) //was UserId
+	if c != "" {
+		userId = bson.ObjectIdHex(c)
+	}
+
+	dss, err = dice_mgo.GetUserDiceSets(userId) //was UserId
 	if err != nil {
 		http.Error(rw, err.Error(), 400)
 	}
+
 	jstring, err := json.Marshal(dss)
 	if err != nil {
 		http.Error(rw, err.Error(), 400)
@@ -99,6 +102,7 @@ func GetDiceSet(rw http.ResponseWriter, r *http.Request) {
 
 	requestBody, err := ioutil.ReadAll(r.Body)
 	if err != nil {
+
 		http.Error(rw, err.Error(), 400)
 	}
 
@@ -180,12 +184,14 @@ func SaveDiceSet(rw http.ResponseWriter, r *http.Request) {
 
 	err = json.Unmarshal(requestBody, &ds)
 	if err != nil {
+		log.Print(err)
 		http.Error(rw, err.Error(), 400)
 	}
 
-	if ds.ID.String() != "" {
+	if ds.ID.Valid() {
 		err = ds.Update()
 		if err != nil {
+			log.Print("HERE", err)
 			http.Error(rw, err.Error(), 400)
 		}
 	} else {
@@ -194,6 +200,7 @@ func SaveDiceSet(rw http.ResponseWriter, r *http.Request) {
 			http.Error(rw, err.Error(), 400)
 		}
 	}
+	log.Print("DS", ds)
 	jstring, err := json.Marshal(ds)
 	if err != nil {
 		http.Error(rw, err.Error(), 400)
@@ -278,6 +285,7 @@ func DeleteDiceSet(rw http.ResponseWriter, r *http.Request) {
 
 	err = json.Unmarshal(requestBody, &ds)
 	if err != nil {
+		log.Print(err)
 		http.Error(rw, err.Error(), 400)
 	}
 	err = ds.Delete()

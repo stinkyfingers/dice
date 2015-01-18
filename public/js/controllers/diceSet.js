@@ -5,7 +5,6 @@ define(["app", "services/diceSet"],function(app){
 		$scope.editorEnabled = false;
 
 		var id  = $routeParams.id;
-		id = parseInt(id, 10);
 	
 		$scope.diceSet = {
 			id:id,
@@ -13,7 +12,7 @@ define(["app", "services/diceSet"],function(app){
 		}
 		$scope.die = {};
 
-		if ($scope.diceSet.id == 0 || isNaN($scope.diceSet.id)){
+		if (typeof $scope.diceSet.id == "undefined"){
 			$scope.editorEnabled = true;
 			dice = {};
 			$scope.diceSet = {
@@ -22,7 +21,7 @@ define(["app", "services/diceSet"],function(app){
 			}
 		}
 
-		if ($scope.diceSet.id > 0){
+		if (typeof $scope.diceSet.id != "undefined"){
 			$scope.diceSet = diceSetFactory.getDiceSet($scope.diceSet)
 				.then(function(data){
 					$scope.diceSet = data;
@@ -59,7 +58,7 @@ define(["app", "services/diceSet"],function(app){
 
 		$scope.addSide = function(die){
 			var side = {
-				id:0,
+				// id:0,
 				dieId: die.id,
 				value:''
 			}
@@ -71,7 +70,7 @@ define(["app", "services/diceSet"],function(app){
 			}
 
 			var die = {
-				id:0,
+				// id:0,
 				sides:[],
 				diceSetId: diceSet.id
 			}

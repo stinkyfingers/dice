@@ -5,7 +5,7 @@
 <ul>
 	<li><a href="/main">Home</a></li>
 	<li><a href="/diceSets">View Dice Sets</a></li>
-	{{if $user.ID}}
+	{{if $user.ObjectID}}
 	<li><form method="post" action="/logout"><input type="submit" value="Logout"></input></form></li>
 	{{end}}
 </ul>
@@ -15,7 +15,7 @@
 
 
 
-	{{if $user.ID }}
+	{{if $user.ObjectID }}
 		<p>Welcome, {{$user.Email}}. </p>
 	{{else}}
 		<form method="post" action="/auth">

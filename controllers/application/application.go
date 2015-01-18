@@ -13,19 +13,18 @@ func Application(rw http.ResponseWriter, r *http.Request) {
 
 	var userId bson.ObjectId
 	var u user_mgo.User
-	var uid string
 
 	cookie, err := r.Cookie("user")
 	if err == nil && cookie != nil {
-
-		uid := strings.Split(cookie.String(), "=")[1]
+		var uid string
+		uid = strings.Split(cookie.String(), "=")[1]
 		if err != nil {
 			return
 		}
-		userId = bson.ObjectIdHex(uid)
-	}
-	if bson.IsObjectIdHex(uid) {
-		u.ID = userId
+		if uid != "" {
+			userId = bson.ObjectIdHex(uid)
+		}
+		u.ObjectID = userId
 		err = u.Get()
 		if err != nil {
 			http.Error(rw, "Error executing templates.", 400)

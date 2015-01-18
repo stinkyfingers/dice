@@ -5,30 +5,34 @@ import (
 	"gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
 
+	"log"
 	"math/rand"
 )
 
 type Die struct {
-	ID        bson.ObjectId `bson:"_id,omitempty"`
-	DiceSetID bson.ObjectId `bson:"diceSetId,omitempty"`
-	Sides     Sides         `bson:"sides,omitempty"`
+	ID bson.ObjectId `bson:"_id,omitempty" json:"id"`
+	// ID        int           `bson:"id,omitempty" json:"id,omitempty"`
+	DiceSetID bson.ObjectId `bson:"diceSetId,omitempty" json:"diceSetId, omitempty"`
+	Sides     Sides         `bson:"sides,omitempty" json:"sides, omitempty"`
 }
 
 type Dice []Die
 
 type Side struct {
-	ID    bson.ObjectId `bson:"_id,omitempty"`
-	DieID bson.ObjectId `bson:"dieId,omitempty"`
-	Value string        `bson:"value,omitempty"`
+	ID bson.ObjectId `bson:"_id,omitempty"json:"id"`
+	// ID       int           `bson:"id,omitempty" json:"id, omitempty"`
+	DieID bson.ObjectId `bson:"dieId,omitempty" json:"dieId, omitempty"`
+	Value string        `bson:"value,omitempty" json:"value, omitempty"`
 }
 type Sides []Side
 
 type DiceSet struct {
-	ID     bson.ObjectId `bson:"_id,omitempty"`
-	Name   string        `bson:"name,omitempty"`
-	Dice   Dice          `bson:"dice,omitempty"`
-	UserID bson.ObjectId `bson:"userId,omitempty"`
-	Public bool          `bson:"public,omitempty"`
+	ID bson.ObjectId `bson:"_id,omitempty"json:"id"`
+	// ID       int           `bson:"id,omitempty" json:"id,omitempty"`
+	Name   string        `bson:"name,omitempty" json:"name, omitempty"`
+	Dice   Dice          `bson:"dice,omitempty" json:"dice, omitempty"`
+	UserID bson.ObjectId `bson:"userId,omitempty" json:"userId, omitempty"`
+	Public bool          `bson:"public,omitempty" json:"pulic, omitempty"`
 }
 
 type DiceSets []DiceSet
@@ -72,6 +76,11 @@ func (d *Die) Create() error {
 	if err != nil {
 		return err
 	}
+
+	for _, s := range d.Sides {
+		s.DieID = d.ID
+		err = s.Create()
+	}
 	return err
 }
 
@@ -87,6 +96,13 @@ func (ds *DiceSet) Create() error {
 	err = c.Insert(ds)
 	if err != nil {
 		return err
+	}
+	for _, d := range ds.Dice {
+		d.DiceSetID = ds.ID
+		err = d.Create()
+		if err != nil {
+			return err
+		}
 	}
 	return err
 }
@@ -118,6 +134,10 @@ func (d *Die) Get() error {
 	if err != nil {
 		return err
 	}
+	err = d.GetSidesByDiceID()
+	if err != nil {
+		return err
+	}
 	return err
 }
 
@@ -133,6 +153,11 @@ func (ds *DiceSet) Get() error {
 	if err != nil {
 		return err
 	}
+	err = ds.GetDiceByDiceSetID()
+	log.Print("L", ds)
+	if err != nil {
+		return err
+	}
 	return err
 }
 
@@ -144,9 +169,16 @@ func (ds *DiceSet) GetDiceByDiceSetID() error {
 	}
 	defer session.Close()
 	c := session.DB("wilddice").C("dice")
-	err = c.FindId(bson.M{"diceSetId": ds.ID}).All(&ds.Dice)
+	err = c.Find(bson.M{"diceSetId": ds.ID}).All(&ds.Dice)
 	if err != nil {
 		return err
+	}
+
+	for _, d := range ds.Dice {
+		err = d.GetSidesByDiceID()
+		if err != nil {
+			return err
+		}
 	}
 	return err
 }
@@ -159,7 +191,7 @@ func (d *Die) GetSidesByDiceID() error {
 	}
 	defer session.Close()
 	c := session.DB("wilddice").C("sides")
-	err = c.FindId(bson.M{"diceId": d.ID}).All(&d.Sides)
+	err = c.Find(bson.M{"dieId": d.ID}).All(&d.Sides)
 	if err != nil {
 		return err
 	}
@@ -169,15 +201,23 @@ func (d *Die) GetSidesByDiceID() error {
 func GetUserDiceSets(userID bson.ObjectId) ([]DiceSet, error) {
 	var err error
 	var dss []DiceSet
+
 	session, err := mgo.DialWithInfo(database.MongoConnectionString())
 	if err != nil {
 		return dss, err
 	}
 	defer session.Close()
 	c := session.DB("wilddice").C("diceSets")
-	err = c.FindId(bson.M{"userId": userID}).All(&dss)
+	err = c.Find(bson.M{"userId": userID}).All(&dss)
 	if err != nil {
 		return dss, err
+	}
+	for _, ds := range dss {
+
+		err = ds.GetDiceByDiceSetID()
+		if err != nil {
+			return dss, err
+		}
 	}
 	return dss, err
 }
@@ -191,7 +231,7 @@ func GetPublicDiceSets() ([]DiceSet, error) {
 	}
 	defer session.Close()
 	c := session.DB("wilddice").C("diceSets")
-	err = c.FindId(bson.M{"isPublic": true}).All(&dss)
+	err = c.Find(bson.M{"isPublic": true}).All(&dss)
 	if err != nil {
 		return dss, err
 	}
@@ -209,7 +249,7 @@ func (s *Side) Update() error {
 	var ch mgo.Change
 	ch.ReturnNew = true
 	ch.Update = s
-	_, err = c.Find(bson.M{"_id": s.ID}).Apply(ch, &s)
+	_, err = c.FindId(s.ID).Apply(ch, &s)
 	if err != nil {
 		return err
 	}
@@ -218,6 +258,19 @@ func (s *Side) Update() error {
 
 func (d *Die) Update() error {
 	var err error
+	for _, s := range d.Sides {
+		if s.ID.Valid() {
+			err = s.Update()
+			if err != nil {
+				return err
+			}
+		} else {
+			err = s.Create()
+			if err != nil {
+				return err
+			}
+		}
+	}
 	session, err := mgo.DialWithInfo(database.MongoConnectionString())
 	if err != nil {
 		return err
@@ -227,7 +280,7 @@ func (d *Die) Update() error {
 	var ch mgo.Change
 	ch.ReturnNew = true
 	ch.Update = d
-	_, err = c.Find(bson.M{"_id": d.ID}).Apply(ch, &d)
+	_, err = c.FindId(d.ID).Apply(ch, &d)
 	if err != nil {
 		return err
 	}
@@ -236,6 +289,19 @@ func (d *Die) Update() error {
 
 func (ds *DiceSet) Update() error {
 	var err error
+	for _, d := range ds.Dice {
+		if d.ID.Valid() {
+			err = d.Update()
+			if err != nil {
+				return err
+			}
+		} else {
+			err = d.Create()
+			if err != nil {
+				return err
+			}
+		}
+	}
 	session, err := mgo.DialWithInfo(database.MongoConnectionString())
 	if err != nil {
 		return err
@@ -245,7 +311,7 @@ func (ds *DiceSet) Update() error {
 	var ch mgo.Change
 	ch.ReturnNew = true
 	ch.Update = ds
-	_, err = c.Find(bson.M{"_id": ds.ID}).Apply(ch, &ds)
+	_, err = c.FindId(ds.ID).Apply(ch, &ds)
 	if err != nil {
 		return err
 	}
@@ -269,6 +335,12 @@ func (s *Side) Delete() error {
 
 func (d *Die) Delete() error {
 	var err error
+	for _, s := range d.Sides {
+		err = s.Delete()
+		if err != nil {
+			return err
+		}
+	}
 	session, err := mgo.DialWithInfo(database.MongoConnectionString())
 	if err != nil {
 		return err
@@ -284,6 +356,12 @@ func (d *Die) Delete() error {
 
 func (ds *DiceSet) Delete() error {
 	var err error
+	for _, d := range ds.Dice {
+		err = d.Delete()
+		if err != nil {
+			return err
+		}
+	}
 	session, err := mgo.DialWithInfo(database.MongoConnectionString())
 	if err != nil {
 		return err

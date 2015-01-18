@@ -108,7 +108,7 @@ func AuthenticateUser(rw http.ResponseWriter, r *http.Request) {
 	}
 
 	cookie.Name = "user"
-	cookie.Value = u.ID.String()
+	cookie.Value = u.ObjectID.Hex()
 	cookie.Expires = time.Now().AddDate(0, 0, 1)
 	http.SetCookie(rw, &cookie)
 

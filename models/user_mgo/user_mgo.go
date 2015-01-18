@@ -12,11 +12,12 @@ import (
 )
 
 type User struct {
-	ID        bson.ObjectId `bson:"_id"`
-	Email     string        `bson:"email"`
-	Password  string        `bson:"password"`
-	Encrypted string        `bson:"encrypted"`
-	DiceSets  dice.DiceSets `bson:"diceSets"`
+	ObjectID bson.ObjectId `bson:"_id,omitempty" json:"id"`
+	// ID        int           `bson:"id,omitempty" json:"id,omitempty"`
+	Email     string        `bson:"email,omitempty" json:"email,omitempty"`
+	Password  string        `bson:"password,omitempty" json:"password,omitempty"`
+	Encrypted string        `bson:"encrypted,omitempty" json:"encrypted,omitempty"`
+	DiceSets  dice.DiceSets `bson:"diceSets,omitempty" json:"diceSets,omitempty"`
 }
 
 func (u *User) Create() error {
@@ -32,7 +33,7 @@ func (u *User) Create() error {
 	}
 	defer session.Close()
 
-	u.ID = bson.NewObjectId()
+	u.ObjectID = bson.NewObjectId()
 	c := session.DB("wilddice").C("users")
 	err = c.Insert(u)
 	if err != nil {
@@ -50,7 +51,7 @@ func (u *User) Get() error {
 	defer session.Close()
 
 	c := session.DB("wilddice").C("users")
-	err = c.FindId(u.ID).One(&u)
+	err = c.FindId(u.ObjectID).One(&u)
 	if err != nil {
 		return err
 	}
@@ -88,7 +89,7 @@ func (u *User) Delete() error {
 	defer session.Close()
 
 	c := session.DB("wilddice").C("users")
-	err = c.Remove(bson.M{"_id": u.ID})
+	err = c.Remove(bson.M{"_id": u.ObjectID})
 	if err != nil {
 		return err
 	}
