@@ -42,6 +42,7 @@ func GetPublicDiceSets(rw http.ResponseWriter, r *http.Request) {
 
 	dss, err = dice_mgo.GetPublicDiceSets()
 	if err != nil {
+		log.Print("HERE", err)
 		http.Error(rw, err.Error(), 400)
 	}
 

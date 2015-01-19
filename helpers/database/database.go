@@ -4,9 +4,9 @@ import (
 	"flag"
 	"fmt"
 	"gopkg.in/mgo.v2"
+	// "log"
 	"os"
-	// "time"
-	"log"
+	"time"
 )
 
 var (
@@ -26,20 +26,38 @@ func ConnectionString() string {
 }
 
 func MongoConnectionString() *mgo.DialInfo {
-	var info mgo.DialInfo
-	addr := os.Getenv("MONGOLAB_URI")
-	if addr == "" {
-		addr = "127.0.0.1"
+
+	var (
+		MongoDBHosts    = os.Getenv("DBHOST")
+		AuthDatabase    = os.Getenv("MONGO_DB")
+		AuthUserName    = os.Getenv("MONGO_USER")
+		AuthPassword    = os.Getenv("MONGO_PASS")
+		mongoDBDialInfo mgo.DialInfo
+	)
+
+	if MongoDBHosts == "" {
+		mongoDBDialInfo = mgo.DialInfo{
+			Addrs: []string{"127.0.0.1"},
+		}
+	} else {
+		mongoDBDialInfo = mgo.DialInfo{
+			Addrs:    []string{MongoDBHosts},
+			Timeout:  60 * time.Second,
+			Database: AuthDatabase,
+			Username: AuthUserName,
+			Password: AuthPassword,
+		}
 	}
 
-	info.Addrs = append(info.Addrs, addr)
-	// info.Username = os.Getenv("MONGO_CART_USERNAME")
-	// info.Password = os.Getenv("MONGO_CART_PASSWORD")
-	// info.Database = os.Getenv("MONGO_CART_DATABASE")
-	// info.Timeout = time.Second * 2
-	// if info.Database == "" {
-	// 	info.Database = "Mullets"
-	// }
-	log.Print(&info)
-	return &info
+	return &mongoDBDialInfo
+}
+
+func MongoDatabase() string {
+	var db string
+	db = os.Getenv("MONGO_DB")
+	if db == "" {
+		db = "wilddice"
+	}
+
+	return db
 }

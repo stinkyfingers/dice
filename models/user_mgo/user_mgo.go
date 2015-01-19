@@ -34,7 +34,7 @@ func (u *User) Create() error {
 	defer session.Close()
 
 	u.ObjectID = bson.NewObjectId()
-	c := session.DB("wilddice").C("users")
+	c := session.DB(database.MongoDatabase()).C("users")
 	err = c.Insert(u)
 	if err != nil {
 		return err
@@ -50,7 +50,7 @@ func (u *User) Get() error {
 	}
 	defer session.Close()
 
-	c := session.DB("wilddice").C("users")
+	c := session.DB(database.MongoDatabase()).C("users")
 	err = c.FindId(u.ObjectID).One(&u)
 	if err != nil {
 		return err
@@ -71,7 +71,7 @@ func (u *User) Authenticate() error {
 	}
 	defer session.Close()
 
-	c := session.DB("wilddice").C("users")
+	c := session.DB(database.MongoDatabase()).C("users")
 	err = c.Find(bson.M{"email": u.Email, "encrypted": u.Encrypted}).One(&u)
 	if err != nil {
 		return err
@@ -88,7 +88,7 @@ func (u *User) Delete() error {
 	}
 	defer session.Close()
 
-	c := session.DB("wilddice").C("users")
+	c := session.DB(database.MongoDatabase()).C("users")
 	err = c.Remove(bson.M{"_id": u.ObjectID})
 	if err != nil {
 		return err

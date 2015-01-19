@@ -5,7 +5,7 @@ import (
 	"gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
 
-	// "log"
+	"log"
 	"math/rand"
 )
 
@@ -60,7 +60,7 @@ func (ds *DiceSet) Create() error {
 	}
 	defer session.Close()
 	ds.ID = bson.NewObjectId()
-	c := session.DB("wilddice").C("diceSets")
+	c := session.DB(database.MongoDatabase()).C("diceSets")
 	err = c.Insert(ds)
 	if err != nil {
 		return err
@@ -75,7 +75,7 @@ func (ds *DiceSet) Get() error {
 		return err
 	}
 	defer session.Close()
-	c := session.DB("wilddice").C("diceSets")
+	c := session.DB(database.MongoDatabase()).C("diceSets")
 	err = c.FindId(ds.ID).One(&ds)
 	if err != nil {
 		return err
@@ -92,7 +92,7 @@ func GetUserDiceSets(userID bson.ObjectId) ([]DiceSet, error) {
 		return dss, err
 	}
 	defer session.Close()
-	c := session.DB("wilddice").C("diceSets")
+	c := session.DB(database.MongoDatabase()).C("diceSets")
 	err = c.Find(bson.M{"userId": userID}).All(&dss)
 	if err != nil {
 		return dss, err
@@ -105,10 +105,11 @@ func GetPublicDiceSets() ([]DiceSet, error) {
 	var dss []DiceSet
 	session, err := mgo.DialWithInfo(database.MongoConnectionString())
 	if err != nil {
+		log.Print(err)
 		return dss, err
 	}
 	defer session.Close()
-	c := session.DB("wilddice").C("diceSets")
+	c := session.DB(database.MongoDatabase()).C("diceSets")
 	err = c.Find(bson.M{"public": true}).All(&dss)
 	if err != nil {
 		return dss, err
@@ -123,7 +124,7 @@ func (ds *DiceSet) Update() error {
 		return err
 	}
 	defer session.Close()
-	c := session.DB("wilddice").C("diceSets")
+	c := session.DB(database.MongoDatabase()).C("diceSets")
 	var ch mgo.Change
 	ch.ReturnNew = true
 	ch.Update = ds
@@ -141,7 +142,7 @@ func (ds *DiceSet) Delete() error {
 		return err
 	}
 	defer session.Close()
-	c := session.DB("wilddice").C("diceSets")
+	c := session.DB(database.MongoDatabase()).C("diceSets")
 	err = c.Remove(bson.M{"_id": ds.ID})
 	if err != nil {
 		return err
