@@ -5,7 +5,7 @@ define(['app'], function (app) {
 			var deferred = $q.defer();
 			$http({
 				method:'get',
-				url:'http://localhost:5000/getPublicDiceSets'
+				url:'/getPublicDiceSets'
 			}).success(function(data){
 				deferred.resolve(data)
 			}).error(function(data){
@@ -18,7 +18,7 @@ define(['app'], function (app) {
 			var deferred = $q.defer();
 			$http({
 				method:'get',
-				url:'http://localhost:5000/getUserDiceSets'
+				url:'/getUserDiceSets'
 			}).success(function(data){
 				deferred.resolve(data)
 			}).error(function(data){
@@ -31,7 +31,7 @@ define(['app'], function (app) {
 			var deferred = $q.defer();
 			$http({
 				method:'post',
-				url:'http://localhost:5000/deleteDiceSet',
+				url:'/deleteDiceSet',
 				data:diceSet
 			}).success(function(data){
 				deferred.resolve(data)

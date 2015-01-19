@@ -9,7 +9,7 @@ define(['app'], function (app) {
 				headers: {
 					'Content-Type': 'application/json',
 				},
-				url:'http://localhost:5000/register',
+				url:'/register',
 				data:user
 			}).success(function(data){
 				deferred.resolve(data)

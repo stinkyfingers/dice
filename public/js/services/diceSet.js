@@ -9,7 +9,7 @@ define(['app'], function (app) {
 				headers: {
 					'Content-Type': 'application/json',
 				},
-				url:'http://localhost:5000/getDiceSet',
+				url:'/getDiceSet',
 				data:diceSet
 			}).success(function(data){
 				deferred.resolve(data)
@@ -26,7 +26,7 @@ define(['app'], function (app) {
 				headers: {
 					'Content-Type': 'application/json',
 				},
-				url:'http://localhost:5000/roll',
+				url:'/roll',
 				data:diceSet
 			}).success(function(data){
 				deferred.resolve(data)
@@ -43,7 +43,7 @@ define(['app'], function (app) {
 				headers: {
 					'Content-Type': 'application/json',
 				},
-				url:'http://localhost:5000/saveDiceSet',
+				url:'/saveDiceSet',
 				data:diceSet
 			}).success(function(data){
 				deferred.resolve(data)
@@ -60,7 +60,7 @@ define(['app'], function (app) {
 				headers: {
 					'Content-Type': 'application/json',
 				},
-				url:'http://localhost:5000/deleteSide',
+				url:'/deleteSide',
 				data:side
 			}).success(function(data){
 				deferred.resolve(data)
@@ -77,7 +77,7 @@ define(['app'], function (app) {
 				headers: {
 					'Content-Type': 'application/json',
 				},
-				url:'http://localhost:5000/deleteDie',
+				url:'/deleteDie',
 				data:die
 			}).success(function(data){
 				deferred.resolve(data)
@@ -94,7 +94,7 @@ define(['app'], function (app) {
 				headers: {
 					'Content-Type': 'application/json',
 				},
-				url:'http://localhost:5000/deleteDiceSet',
+				url:'/deleteDiceSet',
 				data:diceSet
 			}).success(function(data){
 				deferred.resolve(data)
