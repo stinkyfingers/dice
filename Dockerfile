@@ -9,6 +9,8 @@ ADD . /go/src/github.com/stinkyfingers/dice
 # (You may fetch or manage dependencies here,
 # either manually or with a tool like "godep".)
 RUN go get github.com/go-sql-driver/mysql
+RUN go get gopkg.in/mgo.v2
+RUN go get gopkg.in/mgo.v2/bson
 RUN go install github.com/stinkyfingers/dice
 
 # Run the outyet command by default when the container starts.

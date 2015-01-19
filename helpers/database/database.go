@@ -6,6 +6,7 @@ import (
 	"gopkg.in/mgo.v2"
 	"os"
 	// "time"
+	"log"
 )
 
 var (
@@ -39,6 +40,6 @@ func MongoConnectionString() *mgo.DialInfo {
 	// if info.Database == "" {
 	// 	info.Database = "Mullets"
 	// }
-
+	log.Print(&info)
 	return &info
 }
