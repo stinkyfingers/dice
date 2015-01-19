@@ -11,17 +11,9 @@ import (
 	"strings"
 )
 
-type result struct {
-	DieID bson.ObjectId `json:"dieId, omitempty"`
-	Value string        `json:"value, omitempty"`
-}
-
-type results []result
-
 func Roll(rw http.ResponseWriter, r *http.Request) {
 	var ds dice_mgo.DiceSet
-	var rs results
-	var thisDie result
+	var rs dice_mgo.Results
 
 	requestBody, err := ioutil.ReadAll(r.Body)
 	if err != nil {
@@ -33,16 +25,8 @@ func Roll(rw http.ResponseWriter, r *http.Request) {
 		log.Print(err)
 		http.Error(rw, err.Error(), 400)
 	}
-	for _, d := range ds.Dice {
-		di := dice_mgo.Die{ID: d.ID}
-		r, err := di.Roll()
-		if err != nil {
-			http.Error(rw, err.Error(), 400)
-		}
-		thisDie.DieID = di.ID
-		thisDie.Value = r
-		rs = append(rs, thisDie)
-	}
+
+	rs, err = ds.Roll()
 
 	jstring, err := json.Marshal(rs)
 	if err != nil {
@@ -124,56 +108,6 @@ func GetDiceSet(rw http.ResponseWriter, r *http.Request) {
 	rw.Write(jstring)
 }
 
-func GetDie(rw http.ResponseWriter, r *http.Request) {
-	var d dice_mgo.Die
-
-	requestBody, err := ioutil.ReadAll(r.Body)
-	if err != nil {
-		http.Error(rw, err.Error(), 400)
-	}
-
-	err = json.Unmarshal(requestBody, &d)
-	if err != nil {
-		http.Error(rw, err.Error(), 400)
-	}
-
-	err = d.Get()
-	if err != nil {
-		http.Error(rw, err.Error(), 400)
-	}
-
-	jstring, err := json.Marshal(d)
-	if err != nil {
-		http.Error(rw, err.Error(), 400)
-	}
-	rw.Header().Set("Content-Type", "application/json")
-	rw.Write(jstring)
-}
-func GetSide(rw http.ResponseWriter, r *http.Request) {
-	var s dice_mgo.Side
-
-	requestBody, err := ioutil.ReadAll(r.Body)
-	if err != nil {
-		http.Error(rw, err.Error(), 400)
-	}
-
-	err = json.Unmarshal(requestBody, &s)
-	if err != nil {
-		http.Error(rw, err.Error(), 400)
-	}
-
-	err = s.Get()
-	if err != nil {
-		http.Error(rw, err.Error(), 400)
-	}
-
-	jstring, err := json.Marshal(s)
-	if err != nil {
-		http.Error(rw, err.Error(), 400)
-	}
-	rw.Header().Set("Content-Type", "application/json")
-	rw.Write(jstring)
-}
 func SaveDiceSet(rw http.ResponseWriter, r *http.Request) {
 	var ds dice_mgo.DiceSet
 
@@ -208,74 +142,6 @@ func SaveDiceSet(rw http.ResponseWriter, r *http.Request) {
 	rw.Write(jstring)
 }
 
-func SaveDie(rw http.ResponseWriter, r *http.Request) {
-	var d dice_mgo.Die
-
-	requestBody, err := ioutil.ReadAll(r.Body)
-	if err != nil {
-		http.Error(rw, err.Error(), 400)
-	}
-
-	err = json.Unmarshal(requestBody, &d)
-	if err != nil {
-		http.Error(rw, err.Error(), 400)
-	}
-	if d.ID.String() != "" {
-		err = d.Get()
-		if err != nil {
-			http.Error(rw, err.Error(), 400)
-		}
-		err = d.Update()
-		if err != nil {
-			http.Error(rw, err.Error(), 400)
-		}
-	} else {
-		err = d.Create()
-		if err != nil {
-			http.Error(rw, err.Error(), 400)
-		}
-	}
-	jstring, err := json.Marshal(d)
-	if err != nil {
-		http.Error(rw, err.Error(), 400)
-	}
-	rw.Write(jstring)
-}
-
-func SaveSide(rw http.ResponseWriter, r *http.Request) {
-	var s dice_mgo.Side
-
-	requestBody, err := ioutil.ReadAll(r.Body)
-	if err != nil {
-		http.Error(rw, err.Error(), 400)
-	}
-
-	err = json.Unmarshal(requestBody, &s)
-	if err != nil {
-		http.Error(rw, err.Error(), 400)
-	}
-	if s.ID.String() != "" {
-		err = s.Get()
-		if err != nil {
-			http.Error(rw, err.Error(), 400)
-		}
-		err = s.Update()
-		if err != nil {
-			http.Error(rw, err.Error(), 400)
-		}
-	} else {
-		err = s.Create()
-		if err != nil {
-			http.Error(rw, err.Error(), 400)
-		}
-	}
-	jstring, err := json.Marshal(s)
-	if err != nil {
-		http.Error(rw, err.Error(), 400)
-	}
-	rw.Write(jstring)
-}
-
 func DeleteDiceSet(rw http.ResponseWriter, r *http.Request) {
 	var ds dice_mgo.DiceSet
 	requestBody, err := ioutil.ReadAll(r.Body)
@@ -289,41 +155,6 @@ func DeleteDiceSet(rw http.ResponseWriter, r *http.Request) {
 		http.Error(rw, err.Error(), 400)
 	}
 	err = ds.Delete()
-	if err != nil {
-		http.Error(rw, err.Error(), 400)
-	}
-	return
-}
-
-func DeleteDie(rw http.ResponseWriter, r *http.Request) {
-	var d dice_mgo.Die
-	requestBody, err := ioutil.ReadAll(r.Body)
-	if err != nil {
-		http.Error(rw, err.Error(), 400)
-	}
-
-	err = json.Unmarshal(requestBody, &d)
-	if err != nil {
-		http.Error(rw, err.Error(), 400)
-	}
-	err = d.Delete()
-	if err != nil {
-		http.Error(rw, err.Error(), 400)
-	}
-	return
-}
-func DeleteSide(rw http.ResponseWriter, r *http.Request) {
-	var s dice_mgo.Side
-	requestBody, err := ioutil.ReadAll(r.Body)
-	if err != nil {
-		http.Error(rw, err.Error(), 400)
-	}
-
-	err = json.Unmarshal(requestBody, &s)
-	if err != nil {
-		http.Error(rw, err.Error(), 400)
-	}
-	err = s.Delete()
 	if err != nil {
 		http.Error(rw, err.Error(), 400)
 	}

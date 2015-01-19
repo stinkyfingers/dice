@@ -5,24 +5,18 @@ import (
 	"gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
 
-	"log"
+	// "log"
 	"math/rand"
 )
 
 type Die struct {
-	ID bson.ObjectId `bson:"_id,omitempty" json:"id"`
-	// ID        int           `bson:"id,omitempty" json:"id,omitempty"`
-	DiceSetID bson.ObjectId `bson:"diceSetId,omitempty" json:"diceSetId, omitempty"`
-	Sides     Sides         `bson:"sides,omitempty" json:"sides, omitempty"`
+	Sides Sides `bson:"sides,omitempty" json:"sides, omitempty"`
 }
 
 type Dice []Die
 
 type Side struct {
-	ID bson.ObjectId `bson:"_id,omitempty"json:"id"`
-	// ID       int           `bson:"id,omitempty" json:"id, omitempty"`
-	DieID bson.ObjectId `bson:"dieId,omitempty" json:"dieId, omitempty"`
-	Value string        `bson:"value,omitempty" json:"value, omitempty"`
+	Value string `bson:"value,omitempty" json:"value, omitempty"`
 }
 type Sides []Side
 
@@ -32,56 +26,30 @@ type DiceSet struct {
 	Name   string        `bson:"name,omitempty" json:"name, omitempty"`
 	Dice   Dice          `bson:"dice,omitempty" json:"dice, omitempty"`
 	UserID bson.ObjectId `bson:"userId,omitempty" json:"userId, omitempty"`
-	Public bool          `bson:"public,omitempty" json:"pulic, omitempty"`
+	Public bool          `bson:"public,omitempty" json:"public, omitempty"`
 }
 
 type DiceSets []DiceSet
 
-func (d *Die) Roll() (string, error) {
-	var err error
-	err = d.Get()
-	if err != nil {
-		return "", err
-	}
-	n := rand.Intn(len(d.Sides))
-	return d.Sides[n].Value, err
+type Result struct {
+	Value string `json:"value, omitempty"`
 }
+type Results []Result
 
-func (s *Side) Create() error {
+func (ds *DiceSet) Roll() (Results, error) {
 	var err error
-	session, err := mgo.DialWithInfo(database.MongoConnectionString())
+	var r Result
+	var rs Results
+	err = ds.Get()
 	if err != nil {
-		return err
+		return rs, err
 	}
-	defer session.Close()
-	s.ID = bson.NewObjectId()
-	c := session.DB("wilddice").C("sides")
-	err = c.Insert(s)
-	if err != nil {
-		return err
+	for _, die := range ds.Dice {
+		n := rand.Intn(len(die.Sides))
+		r.Value = die.Sides[n].Value
+		rs = append(rs, r)
 	}
-	return err
-}
-
-func (d *Die) Create() error {
-	var err error
-	session, err := mgo.DialWithInfo(database.MongoConnectionString())
-	if err != nil {
-		return err
-	}
-	defer session.Close()
-	d.ID = bson.NewObjectId()
-	c := session.DB("wilddice").C("dice")
-	err = c.Insert(d)
-	if err != nil {
-		return err
-	}
-
-	for _, s := range d.Sides {
-		s.DieID = d.ID
-		err = s.Create()
-	}
-	return err
+	return rs, err
 }
 
 func (ds *DiceSet) Create() error {
@@ -97,47 +65,6 @@ func (ds *DiceSet) Create() error {
 	if err != nil {
 		return err
 	}
-	for _, d := range ds.Dice {
-		d.DiceSetID = ds.ID
-		err = d.Create()
-		if err != nil {
-			return err
-		}
-	}
-	return err
-}
-
-func (s *Side) Get() error {
-	var err error
-	session, err := mgo.DialWithInfo(database.MongoConnectionString())
-	if err != nil {
-		return err
-	}
-	defer session.Close()
-	c := session.DB("wilddice").C("sides")
-	err = c.FindId(s.ID).One(&s)
-	if err != nil {
-		return err
-	}
-	return err
-}
-
-func (d *Die) Get() error {
-	var err error
-	session, err := mgo.DialWithInfo(database.MongoConnectionString())
-	if err != nil {
-		return err
-	}
-	defer session.Close()
-	c := session.DB("wilddice").C("dice")
-	err = c.FindId(d.ID).One(&d)
-	if err != nil {
-		return err
-	}
-	err = d.GetSidesByDiceID()
-	if err != nil {
-		return err
-	}
 	return err
 }
 
@@ -150,48 +77,6 @@ func (ds *DiceSet) Get() error {
 	defer session.Close()
 	c := session.DB("wilddice").C("diceSets")
 	err = c.FindId(ds.ID).One(&ds)
-	if err != nil {
-		return err
-	}
-	err = ds.GetDiceByDiceSetID()
-	log.Print("L", ds)
-	if err != nil {
-		return err
-	}
-	return err
-}
-
-func (ds *DiceSet) GetDiceByDiceSetID() error {
-	var err error
-	session, err := mgo.DialWithInfo(database.MongoConnectionString())
-	if err != nil {
-		return err
-	}
-	defer session.Close()
-	c := session.DB("wilddice").C("dice")
-	err = c.Find(bson.M{"diceSetId": ds.ID}).All(&ds.Dice)
-	if err != nil {
-		return err
-	}
-
-	for _, d := range ds.Dice {
-		err = d.GetSidesByDiceID()
-		if err != nil {
-			return err
-		}
-	}
-	return err
-}
-
-func (d *Die) GetSidesByDiceID() error {
-	var err error
-	session, err := mgo.DialWithInfo(database.MongoConnectionString())
-	if err != nil {
-		return err
-	}
-	defer session.Close()
-	c := session.DB("wilddice").C("sides")
-	err = c.Find(bson.M{"dieId": d.ID}).All(&d.Sides)
 	if err != nil {
 		return err
 	}
@@ -212,13 +97,6 @@ func GetUserDiceSets(userID bson.ObjectId) ([]DiceSet, error) {
 	if err != nil {
 		return dss, err
 	}
-	for _, ds := range dss {
-
-		err = ds.GetDiceByDiceSetID()
-		if err != nil {
-			return dss, err
-		}
-	}
 	return dss, err
 }
 
@@ -231,77 +109,15 @@ func GetPublicDiceSets() ([]DiceSet, error) {
 	}
 	defer session.Close()
 	c := session.DB("wilddice").C("diceSets")
-	err = c.Find(bson.M{"isPublic": true}).All(&dss)
+	err = c.Find(bson.M{"public": true}).All(&dss)
 	if err != nil {
 		return dss, err
 	}
 	return dss, err
 }
 
-func (s *Side) Update() error {
-	var err error
-	session, err := mgo.DialWithInfo(database.MongoConnectionString())
-	if err != nil {
-		return err
-	}
-	defer session.Close()
-	c := session.DB("wilddice").C("sides")
-	var ch mgo.Change
-	ch.ReturnNew = true
-	ch.Update = s
-	_, err = c.FindId(s.ID).Apply(ch, &s)
-	if err != nil {
-		return err
-	}
-	return err
-}
-
-func (d *Die) Update() error {
-	var err error
-	for _, s := range d.Sides {
-		if s.ID.Valid() {
-			err = s.Update()
-			if err != nil {
-				return err
-			}
-		} else {
-			err = s.Create()
-			if err != nil {
-				return err
-			}
-		}
-	}
-	session, err := mgo.DialWithInfo(database.MongoConnectionString())
-	if err != nil {
-		return err
-	}
-	defer session.Close()
-	c := session.DB("wilddice").C("dice")
-	var ch mgo.Change
-	ch.ReturnNew = true
-	ch.Update = d
-	_, err = c.FindId(d.ID).Apply(ch, &d)
-	if err != nil {
-		return err
-	}
-	return err
-}
-
 func (ds *DiceSet) Update() error {
 	var err error
-	for _, d := range ds.Dice {
-		if d.ID.Valid() {
-			err = d.Update()
-			if err != nil {
-				return err
-			}
-		} else {
-			err = d.Create()
-			if err != nil {
-				return err
-			}
-		}
-	}
 	session, err := mgo.DialWithInfo(database.MongoConnectionString())
 	if err != nil {
 		return err
@@ -318,50 +134,8 @@ func (ds *DiceSet) Update() error {
 	return err
 }
 
-func (s *Side) Delete() error {
-	var err error
-	session, err := mgo.DialWithInfo(database.MongoConnectionString())
-	if err != nil {
-		return err
-	}
-	defer session.Close()
-	c := session.DB("wilddice").C("sides")
-	err = c.Remove(bson.M{"_id": s.ID})
-	if err != nil {
-		return err
-	}
-	return err
-}
-
-func (d *Die) Delete() error {
-	var err error
-	for _, s := range d.Sides {
-		err = s.Delete()
-		if err != nil {
-			return err
-		}
-	}
-	session, err := mgo.DialWithInfo(database.MongoConnectionString())
-	if err != nil {
-		return err
-	}
-	defer session.Close()
-	c := session.DB("wilddice").C("dice")
-	err = c.Remove(bson.M{"_id": d.ID})
-	if err != nil {
-		return err
-	}
-	return err
-}
-
 func (ds *DiceSet) Delete() error {
 	var err error
-	for _, d := range ds.Dice {
-		err = d.Delete()
-		if err != nil {
-			return err
-		}
-	}
 	session, err := mgo.DialWithInfo(database.MongoConnectionString())
 	if err != nil {
 		return err
@@ -369,42 +143,6 @@ func (ds *DiceSet) Delete() error {
 	defer session.Close()
 	c := session.DB("wilddice").C("diceSets")
 	err = c.Remove(bson.M{"_id": ds.ID})
-	if err != nil {
-		return err
-	}
-	return err
-}
-
-func (d *Die) DeleteSides() error {
-	var err error
-	session, err := mgo.DialWithInfo(database.MongoConnectionString())
-	if err != nil {
-		return err
-	}
-	defer session.Close()
-	c := session.DB("wilddice").C("sides")
-	err = c.Remove(bson.M{"dieId": d.ID})
-	if err != nil {
-		return err
-	}
-	return err
-}
-
-func (ds *DiceSet) DeleteDice() error {
-	var err error
-	for _, d := range ds.Dice {
-		err = d.DeleteSides()
-		if err != nil {
-			return err
-		}
-	}
-	session, err := mgo.DialWithInfo(database.MongoConnectionString())
-	if err != nil {
-		return err
-	}
-	defer session.Close()
-	c := session.DB("wilddice").C("dice")
-	err = c.Remove(bson.M{"diceSet": ds.ID})
 	if err != nil {
 		return err
 	}

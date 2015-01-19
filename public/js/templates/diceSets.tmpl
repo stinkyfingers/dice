@@ -23,11 +23,13 @@
 	<h3>User Dice Sets</h3>
 	<ul>
 		<li ng-repeat="diceSet in userDiceSets track by $index">
-			<h4>Dice Set Name: <a href="/diceSet/[[diceSet.id]]">[[diceSet.name]]</a></h4><span class="achtung" ng-click="deleteDiceSet(diceSet)">DELETE</span>
-			<table ng-if="diceSet.dice.length">
-				<tr ng-repeat="die in diceSet.dice">
-					<td>Die #: [[die.id]]</td>
-					<td>Sides: <span ng-repeat="side in die.sides">[[side.value]] </td>
+			<h4>Dice Set Name: 
+				<a href="/diceSet/[[diceSet.id]]">[[diceSet.name]]</a>
+			</h4>
+			<button class="std delete" ng-click="deleteDiceSet(diceSet)">Delete</button>
+			<table ng-if="diceSet.dice.length" ng-repeat="die in diceSet.dice">
+				<tr ng-repeat="side in die.sides">
+					<td>Side: <span >[[side.value]] </td>
 				</tr>
 			</table>
 		</li>

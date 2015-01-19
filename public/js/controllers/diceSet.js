@@ -3,6 +3,8 @@ define(["app", "services/diceSet"],function(app){
 
 	app.controller("diceSetController", function($scope, $rootScope, diceSetFactory, $routeParams){
 		$scope.editorEnabled = false;
+		$scope.editable = false;
+		$scope.diceViewer = false;
 
 		var id  = $routeParams.id;
 	
@@ -25,6 +27,9 @@ define(["app", "services/diceSet"],function(app){
 			$scope.diceSet = diceSetFactory.getDiceSet($scope.diceSet)
 				.then(function(data){
 					$scope.diceSet = data;
+					if($scope.diceSet.userId == $rootScope.user){
+						$scope.editable = true;
+					}
 				},function(err){
 					$scope.err = err;
 				});
@@ -40,7 +45,7 @@ define(["app", "services/diceSet"],function(app){
 		};
 
 		$scope.editor = function(){
-			if ($scope.editorEnabled == false){
+			if ($scope.editorEnabled == false && $scope.diceSet.userId == $rootScope.user){
 				$scope.editorEnabled = true;
 			}else{
 				$scope.editorEnabled = false;
@@ -65,7 +70,8 @@ define(["app", "services/diceSet"],function(app){
 			die.sides.push(side);
 		};
 		$scope.addDie = function(diceSet){	
-			if (typeof diceSet.dice == 'undefined'){
+			console.log(diceSet.dice)
+			if (diceSet.dice == null){
 				diceSet.dice = [];
 			}
 
@@ -78,7 +84,7 @@ define(["app", "services/diceSet"],function(app){
 		}
 
 		$scope.deleteSide = function(side){
-			diceSetFactory.deleteSide(side).then(function(data){
+			// diceSetFactory.deleteSide(side).then(function(data){
 				angular.forEach($scope.diceSet.dice,function(die,k){
 					angular.forEach($scope.diceSet.dice[k].sides, function(v,key){
 						if (side == v){
@@ -86,21 +92,21 @@ define(["app", "services/diceSet"],function(app){
 						}
 					});
 				});
-			},function(err){
-				$scope.err = err;
-			});
+			// },function(err){
+			// 	$scope.err = err;
+			// });
 		}
 
 		$scope.deleteDie = function(die){
-			diceSetFactory.deleteDie(die).then(function(data){
+			// diceSetFactory.deleteDie(die).then(function(data){
 				angular.forEach($scope.diceSet.dice,function(die,k){
 					if (die == $scope.diceSet.dice[k]){
 						$scope.diceSet.dice.splice(k,1);
 					}
 				});
-			},function(err){
-				$scope.err = err;
-			});
+			// },function(err){
+			// 	$scope.err = err;
+			// });
 		}
 
 		$scope.deleteDiceSet = function(diceSet){
@@ -109,6 +115,14 @@ define(["app", "services/diceSet"],function(app){
 			},function(err){
 				$scope.err = err;
 			});
+		}
+
+		$scope.showValues = function(){
+			if ($scope.diceViewer == false){
+				$scope.diceViewer = true;
+			}else{
+				$scope.diceViewer = false;
+			}
 		}
 
 

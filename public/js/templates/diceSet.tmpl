@@ -1,33 +1,50 @@
 
 <div>
 	<h3>Name: [[diceSet.name]]</h3>
-	<button ng-click="roll()">ROLL</buttom>
+	<button class="std roll" ng-click="roll()">Roll</buttom>
 </div>
-<div>
-
-	<div ng-if="results != 'null'">
-		<div ng-repeat="result in results">[[result.dieId]] - > [[result.value]]</div>
+<div id="roller">
+	<div ng-if="results.length">
+		<h4>Results:</h4>
+		<div ng-repeat="result in results">[[result.value]]</div>
 	</div>
 </div>
-[[diceSet]]
 
-<div ng-click="editor()">EDIT</div>
 
+<button ng-if="editable && !editorEnabled" ng-click="editor()" class="std edit">Edit</button>
+<button ng-if="editable && editorEnabled" ng-click="editor()" class="std edit">Hide Editor</button>
 
 <div ng-if="editorEnabled">
 	<label for="name">Name:</label>
 	<input type="text" name="name" ng-model="diceSet.name" value="[[diceSet.name]]">
+	<label for="public">Make Public:</label>
+	<input type="checkbox" name="public" ng-model="diceSet.public" ng-checked="[[diceSet.public]]">
 	
 	<div ng-repeat="die in diceSet.dice">
-		Die: [[die.id]] <span ng-click="deleteDie(die)">DELETE DIE</span>
+		Die: [[die.id]] <span ng-click="deleteDie(die)">Delete Die</span>
 		<div  ng-repeat="side in die.sides">
 			<label for="side">Side [[side.id]]:</label>
-			<input type="text" name="side" ng-model="side.value"><span ng-click="deleteSide(side)">DELETE SIDE</span>
+			<input type="text" name="side" ng-model="side.value"><span ng-click="deleteSide(side)">Delete Side</span>
 		</div>
 		<button ng-click="addSide(die)">Add Side</button>
 	</div>
-	<button ng-click="addDie(diceSet)">Add Die</button>
-	<button ng-click="saveDiceSet(diceSet)">Save</button>
-	<button ng-click="deleteDiceSet(diceSet)">Delete</button>
+	<button ng-click="addDie(diceSet)" class="std add">Add Die</button>
+	<button ng-click="saveDiceSet(diceSet)" class="std save">Save</button>
+	<button ng-click="deleteDiceSet(diceSet)" class="std delete">Delete</button>
+
+</div>
+
+
+<button ng-if="diceViewer" ng-click="showValues()" class="std values">Hide Values</button>
+<button ng-if="!diceViewer" ng-click="showValues()" class="std values">Show Values</button>
+<div ng-if="diceViewer">
+	<h4>Dice Set Name: 
+		<a href="/diceSet/[[diceSet.id]]">[[diceSet.name]]</a>
+	</h4>
+	<table ng-if="diceSet.dice.length" ng-repeat="die in diceSet.dice">
+		<tr ng-repeat="side in die.sides">
+			<td>Side: <span >[[side.value]] </td>
+		</tr>
+	</table>
 
 </div>
