@@ -53,7 +53,9 @@ form.std {
 button.std, input.std {
   background-color: #e4c;
   color: #fff;
-  padding: .6em; }
+  padding: .6em;
+  margin-top: .2em;
+  font-size: 1.2em; }
 
 button.values {
   margin-top: 1em; }

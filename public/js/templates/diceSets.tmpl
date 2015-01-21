@@ -1,9 +1,9 @@
 
-<div>
-	<a href="/diceSet">New Dice Set</a>
+<div ng-if="user.id">
+	<a href="/diceSet"><button class="std">New Dice Set</button></a>
 </div>
 
-<div ng-if="publicDiceSets.length">
+<div ng-if="publicDiceSets.length" class="diceSets public">
 	<h3>Public Dice Sets</h3>
 	<ul>
 		<li ng-repeat="diceSet in publicDiceSets track by $index">
@@ -19,7 +19,7 @@
 </div>
 
 
-<div ng-if="userDiceSets.length">
+<div ng-if="userDiceSets.length" class="diceSets private">
 	<h3>User Dice Sets</h3>
 	<ul>
 		<li ng-repeat="diceSet in userDiceSets track by $index">
