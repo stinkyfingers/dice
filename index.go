@@ -23,6 +23,7 @@ func main() {
 	//FILES
 	rh.AddRoute(regexp.MustCompile("/public/js/"), http.StripPrefix("/public/js/", http.FileServer(http.Dir("public/js"))))
 	rh.AddRoute(regexp.MustCompile("/public/templates/"), http.StripPrefix("/public/templates/", http.FileServer(http.Dir("public/templates"))))
+	rh.AddRoute(regexp.MustCompile("/public/css/"), http.StripPrefix("/public/css/", http.FileServer(http.Dir("public/css"))))
 
 	//API
 	rh.AddRoute(regexp.MustCompile("/roll"), http.HandlerFunc(dice.Roll))

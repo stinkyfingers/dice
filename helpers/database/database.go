@@ -37,7 +37,12 @@ func MongoConnectionString() *mgo.DialInfo {
 
 	if MongoDBHosts == "" {
 		mongoDBDialInfo = mgo.DialInfo{
-			Addrs: []string{"127.0.0.1"},
+			// Addrs: []string{"127.0.0.1"},
+			Addrs:    []string{"ds031751.mongolab.com:31751"},
+			Timeout:  60 * time.Second,
+			Database: "heroku_app33202388",
+			Username: "stinkyfingers",
+			Password: "Chocolate1",
 		}
 	} else {
 		mongoDBDialInfo = mgo.DialInfo{
@@ -56,7 +61,7 @@ func MongoDatabase() string {
 	var db string
 	db = os.Getenv("MONGO_DB")
 	if db == "" {
-		db = "wilddice"
+		db = "heroku_app33202388"
 	}
 
 	return db

@@ -21,8 +21,7 @@ type Side struct {
 type Sides []Side
 
 type DiceSet struct {
-	ID bson.ObjectId `bson:"_id,omitempty"json:"id"`
-	// ID       int           `bson:"id,omitempty" json:"id,omitempty"`
+	ID     bson.ObjectId `bson:"_id,omitempty"json:"id"`
 	Name   string        `bson:"name,omitempty" json:"name, omitempty"`
 	Dice   Dice          `bson:"dice,omitempty" json:"dice, omitempty"`
 	UserID bson.ObjectId `bson:"userId,omitempty" json:"userId, omitempty"`
@@ -78,6 +77,7 @@ func (ds *DiceSet) Get() error {
 	c := session.DB(database.MongoDatabase()).C("diceSets")
 	err = c.FindId(ds.ID).One(&ds)
 	if err != nil {
+		log.Print(err)
 		return err
 	}
 	return err

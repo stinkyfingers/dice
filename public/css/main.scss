@@ -1,0 +1,98 @@
+$fonts: arial, Helvetica;
+$pink: #e4c;
+$grey: #222;
+$white: #fff;
+
+
+html{
+	font-family: $fonts;
+	height:100%
+}
+
+body{
+	#header{
+		margin: 0 0 1em 0;
+		padding:1em 0 1em 0;
+		background-color: $pink;
+		width:100%;
+		.mainHeader{
+			text-align: center;
+			color:$white;
+			font-size: 4em;
+		}
+	}
+	
+	color:$pink;
+	a{
+		text-decoration: none;
+	}
+	a:link{
+		color:$pink;
+	}
+	a:active{
+		color:$grey;
+	}
+	a:visited{
+		color:$pink;
+	}
+	a:hover{
+		color:$grey;
+	}
+	height: 100%;
+}
+
+.menu{
+	text-align:center;
+	li{
+		list-style-type: none;
+		display:inline-block;
+		padding:0 1em 0 1em;
+	}
+}
+
+#main{
+	height:100%;
+	margin-bottom: -4em;
+}
+
+.center{
+	text-align: center;
+}
+
+footer{
+	color:$grey;
+	bottom:0;
+	height:4em;
+}
+
+form.std{
+	width:100%;
+	input{
+		display: block;
+		margin: 0 0 1em 0;
+	}
+}
+
+button.std, input.std{
+	background-color: $pink;
+	color:$white;
+	padding:.6em;
+	
+}
+button.values{
+		margin-top:1em;
+}
+#roller{
+	#resultsBox{
+		padding:2em;
+		.resultsTag{
+			display:inline;
+			margin-top:1em;
+		}
+		.results{
+			display:inline-block;
+		}
+	}
+}
+
+

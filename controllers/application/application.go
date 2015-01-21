@@ -24,15 +24,20 @@ func Application(rw http.ResponseWriter, r *http.Request) {
 		if uid != "" {
 			userId = bson.ObjectIdHex(uid)
 		}
+
 		u.ObjectID = userId
 		err = u.Get()
 		if err != nil {
-			http.Error(rw, "Error executing templates.", 400)
+			http.Error(rw, "Error getting user.", 400)
 		}
+
 		data["user"] = u
 	}
 	tname := "main"
 	t, err := template.New(tname).ParseFiles("templates/main.tmpl", "templates/index.tmpl")
+	if err != nil {
+		http.Error(rw, "Error parsing templates.", 400)
+	}
 	err = t.ExecuteTemplate(rw, tname, data)
 	if err != nil {
 		http.Error(rw, "Error executing templates.", 400)

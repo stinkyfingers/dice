@@ -2,11 +2,13 @@
 <!DOCTYPE html>
 	<head>
 		<title>DICE</title>
-
+		<link rel="stylesheet" type="text/css" href="/public/css/main.css">
 	</head>
 	<body>
-		<div>
-			Welcome to Dice-O-Rama
+		<div id="header">
+			<h1 class="mainHeader">
+				Dice-A-Roni
+			</h1>
 		</div>
 		<div id="main">
 			{{template "index" .}}
@@ -14,6 +16,8 @@
 		</div>
 		<script data-main="../public/js/main" src="../public/js/bower_components/requirejs/require.js"></script>
 	</body>
-	
+	<footer>
+		<div class="center">View this application's <a href="http://www.github.com/stinkyfingers/dice">repository</a>.</div>
+	</footer>
 </html>
 {{end}}

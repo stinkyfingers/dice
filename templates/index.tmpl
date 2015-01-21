@@ -1,12 +1,11 @@
 {{define "index"}}
 {{$user := .user}}
 
-<p>This is the index.</p>
-<ul>
+<ul class="menu">
 	<li><a href="/main">Home</a></li>
 	<li><a href="/diceSets">View Dice Sets</a></li>
 	{{if $user.ObjectID}}
-	<li><form method="post" action="/logout"><input type="submit" value="Logout"></input></form></li>
+	<li><form method="post" action="/logout"><input type="submit" value="Logout" class="std login"></input></form></li>
 	{{end}}
 </ul>
 
@@ -18,14 +17,14 @@
 	{{if $user.ObjectID }}
 		<p>Welcome, {{$user.Email}}. </p>
 	{{else}}
-		<form method="post" action="/auth">
+		<form method="post" action="/auth" class="std">
 			<label for="email">Email: </label>
 			<input type="text" name="email">
 			<label for="password">Password: </label>
 			<input type="password" name="password">
-			<input type="submit" value="Submit">
+			<input type="submit" value="Submit" class="std login">
 		</form>
-		<a href="/registration">Register</a>
+		<a href="/registration"><button class="std login">Register</button></a>
 	{{end}}
 
 
