@@ -28,17 +28,11 @@ func main() {
 	//API
 	rh.AddRoute(regexp.MustCompile("/roll"), http.HandlerFunc(dice.Roll))
 	rh.AddRoute(regexp.MustCompile("/getPublicDiceSets"), http.HandlerFunc(dice.GetPublicDiceSets))
-	// rh.AddRoute(regexp.MustCompile("/getUserDiceSets"), makeHandler(dice.GetUserDiceSets))
+	rh.AddRoute(regexp.MustCompile("/resetPassword"), http.HandlerFunc(user.ResetPassword))
 	rh.AddRoute(regexp.MustCompile("/getUserDiceSets"), http.HandlerFunc(dice.GetUserDiceSets))
 	rh.AddRoute(regexp.MustCompile("/getDiceSet"), http.HandlerFunc(dice.GetDiceSet))
-	// rh.AddRoute(regexp.MustCompile("/getDie"), http.HandlerFunc(dice.GetDie))
-	// rh.AddRoute(regexp.MustCompile("/getSide"), http.HandlerFunc(dice.GetSide))
 	rh.AddRoute(regexp.MustCompile("/saveDiceSet"), http.HandlerFunc(dice.SaveDiceSet))
-	// rh.AddRoute(regexp.MustCompile("/saveDie"), http.HandlerFunc(dice.SaveDie))
-	// rh.AddRoute(regexp.MustCompile("/saveSide"), http.HandlerFunc(dice.SaveSide))
 	rh.AddRoute(regexp.MustCompile("/deleteDiceSet"), http.HandlerFunc(dice.DeleteDiceSet))
-	// rh.AddRoute(regexp.MustCompile("/deleteDie"), http.HandlerFunc(dice.DeleteDie))
-	// rh.AddRoute(regexp.MustCompile("/deleteSide"), http.HandlerFunc(dice.DeleteSide))
 
 	//ROUTES
 	rh.AddRoute(regexp.MustCompile("/login"), http.HandlerFunc(application.Login))

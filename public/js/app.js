@@ -42,19 +42,16 @@ define(['angularAMD', 'angular-route', 'angularCookies'], function (angularAMD) 
 		        controller: "diceSetController",
 		        controllerUrl: "controllers/diceSet"
 		    })).
-		    // when('/login',angularAMD.route({
-		    // 	templateUrl: "templates/login.tmpl",
-		    // }))
 		    when('/registration', angularAMD.route({
 		        templateUrl: "/public/js/templates/user.tmpl",
 		        controller: "userController",
 		        controllerUrl: "controllers/user"
 		    })).
-		 //    when('/admin/setlists', angularAMD.route({
-		 //        templateUrl: "/templates/admin/setlists.tmpl",
-		 //        controller: "setlistController",
-		 //        controllerUrl: "controllers/setlists"
-		 //    })).
+		    when('/reset', angularAMD.route({
+		        templateUrl: "/public/js/templates/resetPassword.tmpl",
+		        controller: "userController",
+		        controllerUrl: "controllers/user"
+		    })).
 		 //     when('/admin/setlistsNew', angularAMD.route({
 		 //        templateUrl: "/templates/admin/setlistsNew.tmpl",
 		 //        controller: "setlistControllerNew",

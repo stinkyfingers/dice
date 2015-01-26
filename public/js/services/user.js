@@ -19,6 +19,23 @@ define(['app'], function (app) {
 			return deferred.promise;
 		};
 
+		factory.resetPassword = function(user){
+			var deferred = $q.defer();
+			$http({
+				method:'post',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				url:'/resetPassword',
+				data:user
+			}).success(function(data){
+				deferred.resolve(data)
+			}).error(function(data){
+				deferred.reject(data);
+			});
+			return deferred.promise;
+		};
+
 		
 		return factory;
 
