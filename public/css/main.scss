@@ -2,6 +2,7 @@ $fonts: arial, Helvetica;
 $pink: #e4c;
 $grey: #222;
 $white: #fff;
+$offWhite: #eee;
 
 
 html{
@@ -53,6 +54,11 @@ body{
 #main{
 	height:100%;
 	margin-bottom: -4em;
+	width:75%;
+	background-color: $offWhite;
+	margin-right: auto;
+	margin-left:auto;
+	padding: 2em;
 }
 
 .center{
@@ -63,6 +69,7 @@ footer{
 	color:$grey;
 	bottom:0;
 	height:4em;
+	clear:both;
 }
 
 form.std{
@@ -79,6 +86,7 @@ button.std, input.std{
 	padding:.6em;
 	margin-top:.2em;
 	font-size: 1.2em;
+	border-radius:.2em;
 	
 }
 button.values{
@@ -87,14 +95,40 @@ button.values{
 #roller{
 	#resultsBox{
 		padding:2em;
+		background-color: $white;
+		margin:1em;
+		width:auto;
 		.resultsTag{
-			display:inline;
+			display:block;
 			margin-top:1em;
+			font-size: 2em;
 		}
 		.results{
 			display:inline-block;
+			font-size: 3em;
+			color: $grey;
 		}
 	}
 }
 
+.diceEditor{
+	width:50%;
+	float:left;
+	// display: inline-block;
+}
+
+ .diceViewer{
+	width:50%;
+	float:right;
+}
+
+
+
+
+
+@media (min-width: 600px){
+	#main{
+		width:50%;
+	}
+}
 

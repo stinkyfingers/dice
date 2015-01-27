@@ -34,7 +34,12 @@ body {
 
 #main {
   height: 100%;
-  margin-bottom: -4em; }
+  margin-bottom: -4em;
+  width: 75%;
+  background-color: #eee;
+  margin-right: auto;
+  margin-left: auto;
+  padding: 2em; }
 
 .center {
   text-align: center; }
@@ -42,7 +47,8 @@ body {
 footer {
   color: #222;
   bottom: 0;
-  height: 4em; }
+  height: 4em;
+  clear: both; }
 
 form.std {
   width: 100%; }
@@ -55,17 +61,36 @@ button.std, input.std {
   color: #fff;
   padding: .6em;
   margin-top: .2em;
-  font-size: 1.2em; }
+  font-size: 1.2em;
+  border-radius: .2em; }
 
 button.values {
   margin-top: 1em; }
 
 #roller #resultsBox {
-  padding: 2em; }
+  padding: 2em;
+  background-color: #fff;
+  margin: 1em;
+  width: auto; }
   #roller #resultsBox .resultsTag {
-    display: inline;
-    margin-top: 1em; }
+    display: block;
+    margin-top: 1em;
+    font-size: 2em; }
   #roller #resultsBox .results {
-    display: inline-block; }
+    display: inline-block;
+    font-size: 3em;
+    color: #222; }
+
+.diceEditor {
+  width: 50%;
+  float: left; }
+
+.diceViewer {
+  width: 50%;
+  float: right; }
+
+@media (min-width: 600px) {
+  #main {
+    width: 50%; } }
 
 /*# sourceMappingURL=main.css.map */
