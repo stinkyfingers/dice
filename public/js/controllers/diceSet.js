@@ -56,6 +56,7 @@ define(["app", "services/diceSet"],function(app){
 			diceSetFactory.saveDiceSet(diceSet)
 				.then(function(data){
 					$scope.diceSet = data;
+					alert("Success!");
 				},function(err){
 					$scope.err = err;
 				});
