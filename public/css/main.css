@@ -3,17 +3,19 @@ html {
   height: 100%; }
 
 body {
+  margin: 0;
   color: #e4c;
   height: 100%; }
   body #header {
-    margin: 0 0 1em 0;
-    padding: 1em 0 1em 0;
+    margin: 0 0 .1em 0;
+    padding: .4em 0 0 0;
     background-color: #e4c;
     width: 100%; }
     body #header .mainHeader {
       text-align: center;
       color: #fff;
-      font-size: 4em; }
+      font-size: 4em;
+      margin: 0; }
   body a {
     text-decoration: none; }
   body a:link {
@@ -39,16 +41,27 @@ body {
   background-color: #eee;
   margin-right: auto;
   margin-left: auto;
-  padding: 2em; }
+  padding: .4em; }
 
 .center {
   text-align: center; }
 
-footer {
+#nothing {
+  float: left; }
+
+.center.repo {
   color: #222;
-  bottom: 0;
-  height: 4em;
-  clear: both; }
+  padding-bottom: 1em;
+  text-align: right;
+  font-size: 0.8em; }
+  .center.repo a:link {
+    color: #222; }
+  .center.repo a:active {
+    color: #222; }
+  .center.repo a:visited {
+    color: #222; }
+  .center.repo a:hover {
+    color: #eee; }
 
 form.std {
   width: 100%; }

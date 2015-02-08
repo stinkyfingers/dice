@@ -9,15 +9,15 @@
 			<h1 class="mainHeader">
 				Dice-A-Roni
 			</h1>
+			<div class="center repo"><a href="http://www.github.com/stinkyfingers/dice">View this application's repository</a>.</div>
 		</div>
 		<div id="main">
 			{{template "index" .}}
 			<div ng-view></div>
 		</div>
+		<div id="nothing">
+		</div>
 		<script data-main="../public/js/main" src="../public/js/bower_components/requirejs/require.js"></script>
 	</body>
-	<footer>
-		<div class="center">View this application's <a href="http://www.github.com/stinkyfingers/dice">repository</a>.</div>
-	</footer>
 </html>
 {{end}}
