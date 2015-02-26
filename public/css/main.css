@@ -63,6 +63,9 @@ body {
   .center.repo a:hover {
     color: #eee; }
 
+.plain {
+  list-style-type: none; }
+
 form.std {
   width: 100%; }
   form.std input {
@@ -79,6 +82,14 @@ button.std, input.std {
 
 button.values {
   margin-top: 1em; }
+
+button.right {
+  margin-right: 0;
+  margin-left: auto; }
+
+button.giant {
+  font-size: 3em;
+  padding: .4em 2em .4em 2em; }
 
 #roller #resultsBox {
   padding: 2em;
@@ -101,6 +112,11 @@ button.values {
 .diceViewer {
   width: 50%;
   float: right; }
+
+.banner {
+  padding: .6em;
+  color: #fff;
+  background-color: #e4c; }
 
 @media (min-width: 600px) {
   #main {

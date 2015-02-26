@@ -1,39 +1,32 @@
 
 <div ng-if="user.id">
-	<a href="/diceSet"><button class="std">New Dice Set</button></a>
+	<a href="/diceSet"><button class="std">Create a New Dice Set</button></a>
 </div>
 
 <div ng-if="publicDiceSets.length" class="diceSets public">
-	<h3>Public Dice Sets</h3>
-	<ul>
+	<h3 class="banner">Public Dice Sets</h3>
+	<ul class="plain">
 		<li ng-repeat="diceSet in publicDiceSets track by $index">
-			<h4>Dice Set Name: 
-				<a href="/diceSet/[[diceSet.id]]" ><button class="std">[[diceSet.name]]</button></a>
-			</h4>
-			<table>
-				<tr ng-repeat="die in diceSet.dice">
-					<td>Die</td>
-					<td>Sides: <span ng-repeat="side in die.sides">[[side.value]] </td>
-				</tr>
-			</table>
+			<div class="diceSet">
+				<h4>Dice Set Name: [[diceSet.name]]
+					<a href="/diceSet/[[diceSet.id]]" ><button class="std right">Play</button></a>
+				</h4>
+			</div>
 		</li>
 	</ul>
 </div>
 
 
 <div ng-if="userDiceSets.length" class="diceSets private">
-	<h3>User Dice Sets</h3>
-	<ul>
+	<h3 class="banner">User Dice Sets</h3>
+	<ul class="plain">
 		<li ng-repeat="diceSet in userDiceSets track by $index">
-			<h4>Dice Set Name: 
-				<a href="/diceSet/[[diceSet.id]]"><button class="std">[[diceSet.name]]</button></a>
-			</h4>
-			<button class="std delete" ng-click="deleteDiceSet(diceSet)">Delete</button>
-			<table ng-if="diceSet.dice.length" ng-repeat="die in diceSet.dice">
-				<tr ng-repeat="side in die.sides">
-					<td>Side: <span >[[side.value]] </td>
-				</tr>
-			</table>
+			<div class="diceSet">
+				<h4>Dice Set Name: [[diceSet.name]]
+					<a href="/diceSet/[[diceSet.id]]"><button class="std right">Play</button></a>
+					<button class="std delete right" ng-click="deleteDiceSet(diceSet)">Delete</button>
+				</h4>
+			</div>
 		</li>
 	</ul>
 </div>

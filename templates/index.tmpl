@@ -2,8 +2,8 @@
 {{$user := .user}}
 
 <ul class="menu">
-	<li><a href="/main">Home</a></li>
-	<li><a href="/diceSets">View Dice Sets</a></li>
+	<li><a href="/main"><button class="std">Home</button></a></li>
+	<li><a href="/diceSets"><button class="std">View Dice Sets</button></a></li>
 	{{if $user.ObjectID}}
 	<li><form method="post" action="/logout"><input type="submit" value="Logout" class="std login"></input></form></li>
 	{{end}}
