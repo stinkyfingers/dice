@@ -13,7 +13,7 @@
 	
 
 
-
+<div class="login">
 	{{if $user.ObjectID }}
 		<p>Welcome, {{$user.Email}}. </p>
 	{{else}}
@@ -24,11 +24,12 @@
 			<input type="password" name="password">
 			<input type="submit" value="Submit" class="std login">
 		</form>
+		<span class="divider">&nbsp;&nbsp;</span>
 		<a href="/registration"><button class="std login">Register</button></a>
 		<a href="/reset"><button class="std">Forgot Password</button></a>
 	{{end}}
 
-
+</div>
 
 
 

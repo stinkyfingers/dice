@@ -66,11 +66,18 @@ body {
 .plain {
   list-style-type: none; }
 
+.login form {
+  display: inline;
+  padding: 0 1em 0 1em; }
+
+.divider {
+  font-size: 2em; }
+
 form.std {
   width: 100%; }
   form.std input {
-    display: block;
-    margin: 0 0 1em 0; }
+    margin: 0 0 1em 0;
+    display: block; }
 
 button.std, input.std {
   background-color: #e4c;
@@ -118,8 +125,11 @@ button.giant {
   color: #fff;
   background-color: #e4c; }
 
-@media (min-width: 600px) {
+@media (min-width: 800px) {
   #main {
-    width: 50%; } }
+    width: 50%; }
+
+  form.std input {
+    display: inline; } }
 
 /*# sourceMappingURL=main.css.map */

@@ -44,6 +44,8 @@ body{
 	height: 100%;
 }
 
+
+
 .menu{
 	text-align:center;
 	li{
@@ -93,14 +95,22 @@ body{
 	list-style-type: none;
 }
 
+//form login
+.login form{
+	display:inline;
+	padding:0 1em 0 1em;
+}
+.divider{
+	font-size: 2em;
+}
 form.std{
 	width:100%;
 	input{
-		display: block;
 		margin: 0 0 1em 0;
+		display:block;
 	}
 }
-
+//buttons
 button.std, input.std{
 	background-color: $pink;
 	color:$white;
@@ -160,9 +170,14 @@ button.giant{
 
 
 
-@media (min-width: 600px){
+@media (min-width: 800px){
 	#main{
 		width:50%;
 	}
+	form.std{
+	input{
+		display:inline;
+	}
+}
 }
 
