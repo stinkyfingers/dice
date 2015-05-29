@@ -33,6 +33,12 @@ body {
     list-style-type: none;
     display: inline-block;
     padding: 0 1em 0 1em; }
+  .menu .menuLink {
+    color: #fff;
+    background-color: #e4c;
+    font-size: 1.2em;
+    border: none;
+    cursor: pointer; }
 
 #main {
   margin-bottom: -4em;

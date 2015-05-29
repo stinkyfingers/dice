@@ -53,6 +53,13 @@ body{
 		display:inline-block;
 		padding:0 1em 0 1em;
 	}
+	.menuLink{
+		color:$white;
+		background-color: $pink;
+		font-size: 1.2em;
+		border:none;
+		cursor:pointer;
+	}
 }
 
 #main{

@@ -1,18 +1,6 @@
 {{define "index"}}
 {{$user := .user}}
 
-<ul class="menu">
-	<li><a href="/main"><button class="std">Home</button></a></li>
-	<li><a href="/diceSets"><button class="std">View Dice Sets</button></a></li>
-	{{if $user.ObjectID}}
-	<li><form method="post" action="/logout"><input type="submit" value="Logout" class="std login"></input></form></li>
-	{{end}}
-</ul>
-
-
-	
-
-
 <div class="login">
 	{{if $user.ObjectID }}
 		<p>Welcome, {{$user.Email}}. </p>

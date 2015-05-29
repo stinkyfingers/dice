@@ -8,11 +8,8 @@ define(["app", "services/diceSets"],function(app){
 		$scope.publicDiceSets = diceSetsFactory.getPublicDiceSets()
 			.then(function(data){
 				$scope.publicDiceSets = data;
-				console.log(data)
 				//skip user dice sets
 				angular.forEach($scope.publicDiceSets,function(v,k){
-					console.log(v)
-					console.log($scope.user.id)
 					if (v.userId == $scope.user.id){
 						$scope.publicDiceSets.splice(k,1);
 					};
