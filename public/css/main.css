@@ -71,9 +71,13 @@ body {
 .plain {
   list-style-type: none; }
 
-.login form {
-  display: inline;
-  padding: 0 1em 0 1em; }
+.login {
+  color: #fff;
+  background-color: #870064;
+  padding: 1em; }
+  .login form {
+    display: inline;
+    padding: 0 1em 0 1em; }
 
 .divider {
   font-size: 2em; }
@@ -81,7 +85,6 @@ body {
 form.std {
   width: 100%; }
   form.std input {
-    margin: 0 0 1em 0;
     display: block; }
 
 button.std, input.std {

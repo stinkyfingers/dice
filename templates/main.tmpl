@@ -17,11 +17,12 @@
 				<li><a><form method="post" action="/logout"><input type="submit" value="Logout" class="menuLink"></input></form></a></li>
 				{{end}}
 			</ul>
-
 			<div class="center repo"><a href="http://www.github.com/stinkyfingers/dice">View this application's repository</a>.</div>
+			
+			{{template "login" .}}
 		</div>
 		<div id="main">
-			{{template "index" .}}
+			
 			<div ng-view></div>
 		</div>
 		<div id="nothing">
