@@ -1,7 +1,7 @@
 
 <div>
 	<h3>Name: [[diceSet.name]]</h3>
-	<button class="std roll giant" ng-click="roll()">Roll</buttom>
+	<button class="std roll giant" ng-click="roll()" ng-if="!editorEnabled">Roll</buttom>
 </div>
 <div id="roller">
 	<div ng-if="results.length" id="resultsBox">
