@@ -24,6 +24,9 @@ body{
 			color:$white;
 			font-size: 4em;
 			margin:0;
+			a{
+				color:$white;
+			}
 		}
 	}
 	
@@ -46,21 +49,26 @@ body{
 	height: 100%;
 }
 
-
-
 .menu{
 	text-align:center;
-	li{
-		list-style-type: none;
-		display:inline-block;
-		padding:0 1em 0 1em;
-	}
-	.menuLink{
-		color:$white;
-		background-color: $primary;
-		font-size: 1.2em;
-		border:none;
-		cursor:pointer;
+	ul{
+		display:inline;
+		li{
+			list-style-type: none;
+			display:inline-block;
+			padding:0 1em 0 1em;
+		}
+		.menuLink{
+			color:$white;
+			background-color: $primary;
+			font-size: 1.2em;
+			border:none;
+			cursor:pointer;
+			
+		}
+		.menuLink:hover{
+			color:$black;
+		}
 	}
 }
 
@@ -95,7 +103,7 @@ body{
 		color:$offWhite;
 	}
 	padding-bottom: 1em;
-	text-align: right;
+	float: right;
 	font-size: .8em
 }
 

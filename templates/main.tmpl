@@ -8,17 +8,22 @@
 	<body>
 		<div id="header">
 			<h1 class="mainHeader">
-				Dice-A-Roni
+				<a href="/">
+					Dice-A-Roni
+				</a>
 			</h1>
-			<ul class="menu">
-				<li><a href="/main" class="menuLink">Home</a></li>
-				<li><a href="/diceSets" class="menuLink">View Dice Sets</a></li>
-				{{if $user.ObjectID}}
-				<li><a><form method="post" action="/logout"><input type="submit" value="Logout" class="menuLink"></input></form></a></li>
-				{{end}}
-			</ul>
-			<div class="center repo"><a href="http://www.github.com/stinkyfingers/dice">View this application's repository</a>.</div>
-			
+			<div class="menu">
+				<ul>
+					<li><a href="/main" class="menuLink">Home</a></li>
+					<li><a href="/diceSets" class="menuLink">View Dice Sets</a></li>
+					{{if $user.ObjectID}}
+					<li><a><form method="post" action="/logout"><input type="submit" value="Logout" class="menuLink"></input></form></a></li>
+					{{end}}
+				</ul>
+				<div class="center repo"><a href="http://www.github.com/stinkyfingers/dice">View this application's repository</a>.</div>
+
+			</div>
+
 			{{template "login" .}}
 		</div>
 		<div id="main">
