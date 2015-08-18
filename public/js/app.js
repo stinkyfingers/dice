@@ -22,10 +22,8 @@ define(['angularAMD', 'angular-route', 'angularCookies'], function (angularAMD) 
 			// 	controller: 'indexController',
 			// 	controllerUrl: 'controllers/index'
 			// })).
-			when("/test",angularAMD.route({
-				templateUrl: '/public/js/templates/test.tmpl',
-				controller: 'testController',
-				controllerUrl: 'controllers/test'
+			when("/",angularAMD.route({
+				templateUrl: '/public/js/templates/home.tmpl',
 			})).
 			when("/diceSets",angularAMD.route({
 				templateUrl: '/public/js/templates/diceSets.tmpl',
