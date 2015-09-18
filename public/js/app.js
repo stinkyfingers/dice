@@ -17,11 +17,6 @@ define(['angularAMD', 'angular-route', 'angularCookies'], function (angularAMD) 
 		    }
 
 		$routeProvider.
-			// when('/',angularAMD.route({
-			// 	templateUrl: '/templates/index.tmpl',
-			// 	controller: 'indexController',
-			// 	controllerUrl: 'controllers/index'
-			// })).
 			when("/",angularAMD.route({
 				templateUrl: '/public/js/templates/home.tmpl',
 			})).
@@ -50,16 +45,6 @@ define(['angularAMD', 'angular-route', 'angularCookies'], function (angularAMD) 
 		        controller: "userController",
 		        controllerUrl: "controllers/user"
 		    })).
-		 //     when('/admin/setlistsNew', angularAMD.route({
-		 //        templateUrl: "/templates/admin/setlistsNew.tmpl",
-		 //        controller: "setlistControllerNew",
-		 //        controllerUrl: "controllers/setlistsNew"
-		 //    })).
-			// when('/signup', angularAMD.route({
-		 //        templateUrl: "/templates/signup.tmpl",
-		 //        controller: "adminController",
-		 //        controllerUrl: "controllers/admin"
-		 //    })).
 			otherwise({redirectTo: "/"});
 
 		
@@ -70,56 +55,6 @@ define(['angularAMD', 'angular-route', 'angularCookies'], function (angularAMD) 
 		var u = $cookies.user;
 		$rootScope.user = u;
 	});
-
-
-	//user on rootScope
-	// app.run(function($rootScope, mainFactory){
-	// 	$rootScope.user={};
-	// 	$rootScope.user = mainFactory.getCurrentUser()
-	// 		.then(function(data){
-	// 			$rootScope.user = data;
-	// 			// console.log(data);//log userdata
-	// 		},function(data){
-	// 			$rootScope.user = {};
-	// 			console.log("Not logged in.")
-	// 		});
-	// });
-
-	// app.factory("mainFactory",function($q, $location, $routeParams, $route, $http){
-	// 	var service = {};
-	//       service.getCurrentUser = function(){
-	//         var deferred = $q.defer();
-	//         $http({
-	//           method:"GET",
-	//           url:"/user"
-	//         }).success(function(data){
-	//           deferred.resolve(data);
-	//         }).error(function(){
-	//           deferred.reject("Error");
-	//         })
-	//         return deferred.promise;
-	//       }
-
-	//       return service;
-	// });
-
-	// app.directive("ngConfirmClick",function(){
-	// 	return {
-	// 		restrict: 'A',
-	// 		link: function(scope, element, attr){
-	// 			var msg = attr.ngConfirmClick || "Are you sure?";
- //                var clickAction = attr.confirmedClick; //proceed with directive confirmedClick
- //                element.bind('click',function (event) {
- //                    if ( window.confirm(msg) ) {
- //                        scope.$eval(clickAction)
- //                    }
- //                });
-	// 		}
-	// 	}	
-	// });
-
-
-
 
 
   return angularAMD.bootstrap(app);
