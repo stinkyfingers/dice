@@ -138,7 +138,9 @@ button.std, input.std{
 	margin-top:.2em;
 	font-size: 1.2em;
 	border-radius:.2em;
-	
+}
+button.std:hover{
+	background-color: $secondary;
 }
 button.values{
 		margin-top:1em;
@@ -171,14 +173,21 @@ button.giant{
 }
 
 .diceEditor{
-	width:50%;
+	width:100%;
 	float:left;
 	// display: inline-block;
 }
 
- .diceViewer{
+.diceViewer{
 	width:50%;
-	float:right;
+	float:left;
+	background-color: $offWhite;
+	padding:1em;
+	margin:1em;
+	.dieViewer{
+		background-color: $white;
+		padding: .4em;
+	}
 }
 .banner{
 	padding:.6em;
@@ -193,6 +202,29 @@ button.giant{
 .diceSetName,.diceSetPlay{
 	width:50%;
 	padding:1em;
+}
+
+//editor
+.editor{
+	font-size:1.2em;
+	.heading{
+		background-color: $offWhite;
+		padding:1em;
+		margin:1em;
+	}
+	input{
+		border-radius: .2em;
+		padding:.4em;
+		font-size:1.4em;
+	}
+	input[type=checkbox]{
+		  /* Double-sized Checkboxes */
+		  -ms-transform: scale(2); /* IE */
+		  -moz-transform: scale(2); /* FF */
+		  -webkit-transform: scale(2); /* Safari and Chrome */
+		  -o-transform: scale(2); /* Opera */
+		  padding: 10px;
+	}
 }
 
 

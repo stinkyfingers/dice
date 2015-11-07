@@ -122,7 +122,7 @@ func Logout(rw http.ResponseWriter, r *http.Request) {
 	}
 	cookie.MaxAge = -1
 	http.SetCookie(rw, cookie)
-	rw.Write(nil)
+	http.Redirect(rw, r, "/", http.StatusTemporaryRedirect)
 }
 
 func Register(rw http.ResponseWriter, r *http.Request) {

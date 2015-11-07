@@ -15,6 +15,7 @@ func Application(rw http.ResponseWriter, r *http.Request) {
 	var u user_mgo.User
 
 	cookie, err := r.Cookie("user")
+	data["user"] = nil
 	if err == nil && cookie != nil {
 		var uid string
 		uid = strings.Split(cookie.String(), "=")[1]
