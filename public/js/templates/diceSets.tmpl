@@ -21,8 +21,11 @@
 		<tbody>
 			<tr ng-repeat="diceSet in userDiceSets track by $index">
 				<td class="diceSetName">[[diceSet.name]]</td>
-				<td class="diceSetPlay"><a href="/diceSet/[[diceSet.id]]"><button class="std right">Play</button></a>
-				<button class="std delete right" ng-click="deleteDiceSet(diceSet)">Delete</button></td>
+				<td class="diceSetPlay">
+					<a href="/diceSet/[[diceSet.id]]"><button class="std right">Play</button></a>
+					<a ng-click="edit(diceSet.id)"><button class="std right">Edit</button></a>
+					<button class="std delete right" ng-click="deleteDiceSet(diceSet)">Delete</button>
+				</td>
 			</tr>
 		</tbody>
 	</table>

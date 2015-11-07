@@ -1,8 +1,8 @@
 //diceSets
 define(["app", "services/diceSet"],function(app){
 
-	app.controller("diceSetController", function($scope, $rootScope, diceSetFactory, $routeParams){
-		$scope.editorEnabled = false;
+	app.controller("diceSetController", function($scope, $rootScope, diceSetFactory, $routeParams, $location){
+		$scope.editorEnabled = $location.search().e;
 		$scope.editable = false;
 		$scope.diceViewer = false;
 

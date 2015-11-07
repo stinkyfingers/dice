@@ -1,7 +1,7 @@
 //diceSets
 define(["app", "services/diceSets"],function(app){
 
-	app.controller("diceSetsController", function($scope, diceSetsFactory, $rootScope){
+	app.controller("diceSetsController", function($scope, diceSetsFactory, $rootScope, $location){
 		$scope.user = {};
 		$scope.user.id = $rootScope.user;
 
@@ -25,19 +25,22 @@ define(["app", "services/diceSets"],function(app){
 				});
 		$scope.deleteDiceSet = function (diceSet){
 			if (confirm("Are you sure?")){
-				diceSetsFactory.deleteDiceSet(diceSet)
-					.then(function(data){
-						angular.forEach($scope.userDiceSets,function(v,k){
-							if (diceSet == v){
-								$scope.userDiceSets.splice(k,1);
-							};
-						});
-							// $	scope.userDiceSets = data;
-						},function(err){
-							$scope.err = err;
-						});
-				};
+				diceSetsFactory.deleteDiceSet(diceSet).then(function(data){
+					angular.forEach($scope.userDiceSets,function(v,k){
+						if (diceSet == v){
+							$scope.userDiceSets.splice(k,1);
+						};
+					});
+						// $	scope.userDiceSets = data;
+					},function(err){
+						$scope.err = err;
+				});
 			};
+		};
+
+		$scope.edit = function (id){
+			$location.url('/diceSet/' + id + '?e=true');
+		};
 
 	});
 });

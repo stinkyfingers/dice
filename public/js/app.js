@@ -18,7 +18,7 @@ define(['angularAMD', 'angular-route', 'angularCookies'], function (angularAMD) 
 
 		$routeProvider.
 			when("/",angularAMD.route({
-				templateUrl: '/public/js/templates/home.tmpl',
+				templateUrl: '/public/js/templates/home.tmpl'
 			})).
 			when("/diceSets",angularAMD.route({
 				templateUrl: '/public/js/templates/diceSets.tmpl',
@@ -44,6 +44,11 @@ define(['angularAMD', 'angular-route', 'angularCookies'], function (angularAMD) 
 		        templateUrl: "/public/js/templates/resetPassword.tmpl",
 		        controller: "userController",
 		        controllerUrl: "controllers/user"
+		    })).
+		     when('/logout', angularAMD.route({
+		        templateUrl: "/public/js/templates/home.tmpl",
+		        controller: "mainController",
+		        controllerUrl: "controllers/main"
 		    })).
 			otherwise({redirectTo: "/"});
 

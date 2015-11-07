@@ -36,6 +36,23 @@ define(['app'], function (app) {
 			return deferred.promise;
 		};
 
+		factory.logout = function(user){
+			var deferred = $q.defer();
+			$http({
+				method:'post',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				url:'/logout'
+			}).success(function(data){
+				deferred.resolve(data)
+			}).error(function(data){
+				deferred.reject(data);
+			});
+			return deferred.promise;
+		};
+
+
 		
 		return factory;
 
