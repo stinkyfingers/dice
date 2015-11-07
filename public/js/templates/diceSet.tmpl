@@ -1,6 +1,6 @@
 
 <div>
-	<h3>Name: [[diceSet.name]]</h3>
+	<h2>Name: [[diceSet.name]]</h2>
 	<button class="std roll giant" ng-click="roll()" ng-if="!editorEnabled">Roll</buttom>
 </div>
 <div id="roller">
@@ -56,7 +56,7 @@
 		<a href="/diceSet/[[diceSet.id]]">[[diceSet.name]]</a>
 	</h4>
 	<table ng-if="diceSet.dice.length" class="dieViewer" ng-repeat="($i,die) in diceSet.dice">
-		<tr><td>Die [[$i + 1]]</td></tr>
+		<tr><td><h4>Die [[$i + 1]]</h4></td></tr>
 		<tr ng-repeat="side in die.sides">
 			<td>Side: <span>[[side.value]]</span> </td>
 		</tr>
