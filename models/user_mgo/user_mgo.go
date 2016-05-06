@@ -111,7 +111,7 @@ func (u *User) ResetPassword() error {
 	defer session.Close()
 
 	c := session.DB(database.MongoDatabase()).C("users")
-	err = c.FindId(bson.M{"email": u.Email}).One(&u)
+	err = c.Find(bson.M{"email": u.Email}).One(&u)
 	if err != nil {
 		return err
 	}

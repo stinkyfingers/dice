@@ -6,7 +6,6 @@ import (
 	"errors"
 	"github.com/stinkyfingers/dice/models/user_mgo"
 	"io/ioutil"
-	// "log"
 	"net/http"
 	"time"
 )
@@ -149,6 +148,7 @@ func Register(rw http.ResponseWriter, r *http.Request) {
 
 func ResetPassword(rw http.ResponseWriter, r *http.Request) {
 	var err error
+
 	var u user_mgo.User
 	body, err := ioutil.ReadAll(r.Body)
 	if err != nil {
@@ -159,10 +159,11 @@ func ResetPassword(rw http.ResponseWriter, r *http.Request) {
 		http.Error(rw, err.Error(), http.StatusInternalServerError)
 		return
 	}
+
 	err = u.ResetPassword()
 	if err != nil {
+		http.Error(rw, err.Error(), http.StatusInternalServerError)
 		return
-
 	}
 
 	jstring, err := json.Marshal(u)
